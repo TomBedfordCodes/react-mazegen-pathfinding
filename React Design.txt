@@ -1,0 +1,7 @@
+Rather than looping through an entire 2D array every time a node is clicked,
+	store everything in a dictionary by ID. ID should be where it would
+	have been positioned in a 2D array so we can still easily access
+	neighbours.
+Could do an initial runthrough and populate a neighbour object for each node
+	on page loadup. This could have 'top', 'right', 'bottom,' and 'left' 
+	attributes.
