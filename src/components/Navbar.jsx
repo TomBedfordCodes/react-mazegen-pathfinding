@@ -8,7 +8,7 @@ export default function Navbar() {
                 <li><a className="navbar--link" href="#">About Me</a></li>
                 <li><a className="navbar--link" href="#">Projects</a></li>
             </ul>
-            <h1 className='navbar--title'>Maze Generator & Pathfinder</h1>
+            <h1 className='navbar--title'>Maze Generator <span className='accent-text'>&</span> Pathfinder</h1>
             <img className='navbar--icon' src='/maze-icon.jpg' />
         </nav>
     )

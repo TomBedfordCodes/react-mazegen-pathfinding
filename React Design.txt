@@ -5,3 +5,10 @@ Rather than looping through an entire 2D array every time a node is clicked,
 Could do an initial runthrough and populate a neighbour object for each node
 	on page loadup. This could have 'top', 'right', 'bottom,' and 'left' 
 	attributes.
+
+
+Mobile first:
+	Use burger for menu in top-left which slides out.
+	Not enough width for navbar (causing footer issues).
+	Have settings at the top, then maze below. 'Generate maze' button 
+		just above maze. Possible to snap view to maze?
