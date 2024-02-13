@@ -1,3 +1,4 @@
+/* APP-WIDE */
 
 * {
   box-sizing: border-box;
@@ -6,21 +7,6 @@
 html, body {
   height: 100%;
 }
-
-
-/* COLOR VARIABLES */
-:root {
-  --mainTextCol: #E8E6E3;
-  --accent: rgb(82, 229, 82);
-  --accentHover: rgb(177, 253, 177);
-  --accentActive:  rgb(1, 184, 1);
-  --secondaryBackgroundCol: #202425;
-}
-
-.accent-text {
-  color: var(--accent);
-}
-
 
 body {
   margin: 0;
@@ -39,6 +25,27 @@ body {
 
 
 
+/* COLOR VARIABLES */
+
+:root {
+  --mainTextCol: #E8E6E3;
+  --accent: rgb(82, 229, 82);
+  --accentHover: rgb(177, 253, 177);
+  --accentActive:  rgb(1, 184, 1);
+  --secondaryBackgroundCol: #202425;
+}
+
+.accent-text {
+  color: var(--accent);
+}
+
+
+
+
+
+
+
+/* NAV */
 
 nav {
   padding: 1.5em 2.5em;
@@ -87,10 +94,45 @@ nav {
 
 
 
+
+
+/* MAIN */
+
 main {
   height: 100%;
   padding: .5em 2.5em;
+  display: flex;
 }
+
+.main--maze-container {
+  border-right: var(--accent) solid 1px;
+  width: 55%;
+  margin: 2.5em 0;
+  padding-right: 2.5em;
+  padding-bottom: 1em;
+  padding-top: 1em;
+  display: flex;
+  flex-direction: column;
+}
+     
+.main--options-container {
+  width: 45%;
+  padding: 1em 2.5em;
+  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+
+
+
+
+
+
+
+/* MAZE */
 
 .maze--row {
   display: flex;
@@ -103,9 +145,47 @@ main {
   border: solid rgb(23, 23, 23) 1px;
 }
 
+.maze--container {
+  max-width: 418px;  /* 11 x 38 */
+  width: 100%;
+  aspect-ratio: 1 /1;
+  align-self: center;
+  background-color: #E8E6E3;
+}
+
+.maze--node {
+  border: solid lightgrey 1px;
+}
 
 
 
+
+
+
+
+
+
+
+
+
+
+/* OPTIONS */
+
+.options--container {
+  height: 100%;
+  /* border: solid white 1px; */
+}
+
+
+
+
+
+
+
+
+
+
+/* FOOTER */
 
 footer {
   height: 3em;
@@ -125,41 +205,14 @@ footer > p {
 
 
 
+
+
+
+
+
+
+
 @media (min-width: 800px) {
-
-  main {
-    padding: .5em 2.5em;
-    display: flex;
-  }
-
-  .main--maze-container {
-    border-right: var(--accent) solid 1px;
-    width: 55%;
-    margin: 1em 0;
-    padding-right: 2.5em;
-    padding-bottom: 1em;
-    display: flex;
-    flex-direction: column;
-  }
-       
-  .main--options-container {
-    width: 45%;
-    padding: 1em 2.5em;
-    margin-bottom: 1em;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .maze--container {
-    height: 100%;
-    background-color: #E8E6E3;
-    /* border: solid white 1px; */
-  }
-
-  .options--container {
-    height: 100%;
-    /* border: solid white 1px; */
-  }
 
 }
 

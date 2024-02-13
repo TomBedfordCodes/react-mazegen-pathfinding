@@ -1,9 +1,9 @@
 import React from 'react'
-// import MazeTest from './mazetest/MazeTest.jsx'
+import MazeTest from './mazetest/MazeTest.jsx'
 import Maze from './maze/Maze.jsx'
 
 
-    // WRAP MAIN WITH CONTEXT FOR ALL OPTIONS AND THE MAZE ARRAY
+    // CLICK AND DRAG SHOULD WORK
 
     // MAZE:
     //      EACH NODE TO BE AN OBJECT WITHIN THE 2D ARRAY - SEPARATE OUT ATTRS RELEVANT TO EACH ALGO.
@@ -43,26 +43,78 @@ import Maze from './maze/Maze.jsx'
 const MazeContext = React.createContext()
 
 
+const nodeWidth = 11
+const nodeHeight = 11
+const nodesInRow = 38
+const rowsInCol = 38
+
+// CREATE INITIAL MAZE 2D ARRAY
+const initialArr = []
+for (let i = 0; i < rowsInCol; i++) {
+    const row = []
+        for (let j = 0; j < nodesInRow; j++) {
+            row.push({
+                nodeWidth,
+                nodeHeight,
+                coords: [i, j],
+                id: `${i}, ${j}`,
+                isWall: false  // UPDATE THIS OBJECT WITH ALL ALGO STUFF
+            })
+        }
+    initialArr.push(row)
+}
+
+
+
+
+
+// COMPONENT
+
 export default function Main() {
 
-    const [mazeArr, setMazeArr] = React.useState([
-        // CREATE MAZE ARRAY OF OBJECTS HERE
-    ])
 
-    function updateMaze() {
-        // Have to go through every object on every maze update to see what needs changing.
-        //      This seems like it will be slow for large mazes, but I haven't done the
-        //      tutorial on React optimisation yet; might be improvements to be made.
+    const [mazeArr, setMazeArr] = React.useState(initialArr)
+    const [specialNodes, setSpecialNodes] = React.useState({
+        start: null,
+        end: null,
+        current: null
+    })
+    const [options, setOptions] = React.useState({})
+
+
+
+    function updateMaze(coords) {
+        setMazeArr(prevArr => {
+            const newArr = prevArr.map((row, i) => {
+                if (i != coords[0]) {
+                    return row
+                }
+                const newRow = row.map((node, j) => {
+                    if (j === coords[1]) {
+                        return {
+                            ...node,
+                            isWall: !node.isWall
+                        }
+                    } else {
+                        return node
+                    }
+                })
+                return newRow
+            })
+            return newArr
+        })
     }
 
 
     return (
         <MazeContext.Provider value={{
-            // ADD IN CONTEXT VALUES HERE - MAZE ARRAY, SPECIAL NODES ARRAY, AND OPTIONS
+            updateMaze,
+            mazeArr,
+            specialNodes,
+            options
         }}>
             <main>
                 <div className='main--maze-container'>
-                    <h2>Maze</h2>
                     {/* <MazeTest /> */}
                     <Maze />
                 </div>
@@ -74,3 +126,5 @@ export default function Main() {
         </MazeContext.Provider>
     )
 }
+
+export { MazeContext }
