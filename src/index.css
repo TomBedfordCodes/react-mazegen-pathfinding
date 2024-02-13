@@ -146,20 +146,47 @@ main {
 }
 
 .maze--container {
-  max-width: 418px;  /* 11 x 38 */
+  max-width: 583px;  /* 11 x 53
+  max-width: 418px;  /* 11 x 38
   width: 100%;
-  aspect-ratio: 1 /1;
+  /* aspect-ratio: 1 /1; */
   align-self: center;
   background-color: #E8E6E3;
+  user-select: none;
 }
 
 .maze--node {
   border: solid lightgrey 1px;
+  transition: background-color 0.3s;
 }
 
 
 
 
+
+/* CSS ANIMATION CODE FOR WALL PLACING */
+
+.wall {
+  animation-name: wallAnimation;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+@keyframes wallAnimation {
+  0% {
+    transform: scale(.3);
+    background-color: rgb(23, 23, 23);
+  }
+  100% {
+    transform: scale(1.0);
+    background-color: rgb(23, 23, 23);
+  }
+}
 
 
 

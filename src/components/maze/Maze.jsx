@@ -5,16 +5,22 @@ import Node from './Node'
 
 export default function Maze() {
 
-    const { updateMaze, mazeArr, specialNodes, options } = React.useContext(MazeContext)
+    const { 
+        updateMaze, 
+        forceUpdate,
+        mazeArr, 
+        specialNodes, 
+        options 
+    } = React.useContext(MazeContext)
 
-    const mazeRows = mazeArr.map(row => {
+    const mazeRows = mazeArr.current.map((row, i) => {
         const newRow = row.map(node => {
             return (
-                <Node node={node} id={`${node.id}`}/>
+                <Node node={node} key={`${node.id}`}/>
             )
         })
         return (
-            <div className='maze--row'>
+            <div key={i} className='maze--row'>
                 {newRow}
             </div>
         )

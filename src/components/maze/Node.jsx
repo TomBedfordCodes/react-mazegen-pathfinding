@@ -4,22 +4,41 @@ import { MazeContext } from '../Main'
 
 export default function Node({ node }) {
 
-    const { updateMaze, mazeArr, specialNodes, options } = React.useContext(MazeContext)
+    const { 
+        updateMazeOnClick,
+        forceUpdate, 
+        mazeArr, 
+        specialNodes, 
+        options 
+    } = React.useContext(MazeContext)
 
-    
-    const { nodeWidth, nodeHeight, coords, isWall } = node
-    
+    const { 
+        nodeWidth, 
+        nodeHeight, 
+        coords, 
+        isWall 
+    } = node
 
     const styles = {
         width: nodeWidth,
         height: nodeHeight,
-        backgroundColor: isWall ? "black" : "white"
+    }
+
+    const className = isWall ? "maze--node wall" : "maze--node"
+
+    function checkBtnDown(e) {
+        if (e.buttons === 1) {
+            updateMazeOnClick(coords)
+        }
     }
 
     return (
-        <div 
-            className='maze--node'
-            onClick={() => updateMaze(coords)}
+        <div
+            // className='maze--node'
+            className={className}
+            onMouseEnter={checkBtnDown}
+            // onClick={() => updateMazeOnClick(coords)}
+            onMouseDown={() => updateMazeOnClick(coords)}
             style={styles}
         >
         </div>
