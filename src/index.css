@@ -175,19 +175,18 @@ main {
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
+  background-color: rgb(23, 23, 23);
+
 }
 
 @keyframes wallAnimation {
   0% {
     transform: scale(.3);
-    background-color: rgb(23, 23, 23);
   }
   100% {
     transform: scale(1.0);
-    background-color: rgb(23, 23, 23);
   }
 }
-
 
 
 
@@ -206,9 +205,16 @@ main {
 }
 
 .options--click-choice-panel--container {
+  height: 3em;
   border: solid white 1px;
 }
 
+
+.options--click-choice-btn {
+  padding: 0.5em 1em;
+  font-family: 'Karla', sans-serif;
+  font-size: 1rem;
+}
 
 
 

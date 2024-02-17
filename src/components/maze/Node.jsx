@@ -1,15 +1,12 @@
 import React from 'react'
 import { MazeContext } from '../Main'
-import { wallNode, pathNode } from '../../namedConstants.js'
+import { wallNode, pathNode, startNode } from '../../namedConstants.js'
 
 
 export default function Node({ node }) {
 
     const { 
         updateMazeOnClick,
-        forceUpdate, 
-        mazeArr, 
-        specialNodes, 
         options
     } = React.useContext(MazeContext)
 
@@ -17,7 +14,6 @@ export default function Node({ node }) {
         nodeWidth, 
         nodeHeight, 
         coords, 
-        isWall 
     } = node
 
     const styles = {
@@ -27,18 +23,24 @@ export default function Node({ node }) {
 
     const baseName = "maze--node"
     let className = baseName
-    switch (node.terrainType) {
+    switch (node.clickChoiceType) {
         case wallNode: 
             className = `${baseName} wall`
             break
         case pathNode: 
-            className = baseName
+            className = `${baseName}`
+            break
+        case startNode:
+            className = `${baseName} start`
+            break
+        case startNode:
+            className = `${baseName} end`
             break
         default:
             className = baseName
     }
 
-    
+
     function checkBtnDown(e) {
         if (e.buttons === 1) {
             updateMazeOnClick(coords)
@@ -47,10 +49,8 @@ export default function Node({ node }) {
 
     return (
         <div
-            // className='maze--node'
             className={className}
             onMouseEnter={checkBtnDown}
-            // onClick={() => updateMazeOnClick(coords)}
             onMouseDown={() => updateMazeOnClick(coords)}
             style={styles}
         >

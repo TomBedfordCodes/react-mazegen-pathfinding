@@ -4,6 +4,7 @@ import Options from './options/Options.jsx'
 
 import {
     wallNode, pathNode,
+    startNode, endNode,
     primms,
     dijkstras
 } from '../namedConstants.js'
@@ -61,34 +62,73 @@ const nodesInRow = 53
 const rowsInCol = 39
 
 
+const templateNode = {
+    nodeWidth,
+    nodeHeight,
+    coords: [],
+    id: ``,
+
+    // UPDATE THIS OBJECT WITH ALL ALGO VARS (LIKE F, G ETC.) - USING CONSTS FROM NAMES FILE
+
+    // CHOSEN NODE TYPE
+    clickChoiceType: pathNode,
+
+    // MAZEGEN
+    [primms]: {},
+
+    // PATHFINDING
+    [dijkstras]: {},
+}
+
+
 // ON STARTUP CREATE MAZE - 2D ARRAY OF NODE OBJECTS
-const initialArr = []
-for (let i = 0; i < rowsInCol; i++) {
-    const row = []
-    for (let j = 0; j < nodesInRow; j++) {
-        row.push({
-            nodeWidth,
-            nodeHeight,
-            coords: [i, j],
-            id: `${i}, ${j}`,
+
+const initialArr = getResetMaze()
+
+function getResetMaze() {
+    const starterArr = []
+    for (let i = 0; i < rowsInCol; i++) {
+        const row = []
+        for (let j = 0; j < nodesInRow; j++) {
+            row.push({
+                ...templateNode,
+                coords: [i, j],
+                id: `${i}, ${j}`,
+            })
+        }
+        starterArr.push(row)
+    }
+    return starterArr
+}
+
+
+// for (let i = 0; i < rowsInCol; i++) {
+//     const row = []
+//     for (let j = 0; j < nodesInRow; j++) {
+//         row.push({
+//             ...templateNode,
+//             coords: [i, j],
+//             id: `${i}, ${j}`,
+            // nodeWidth,
+            // nodeHeight,
 
             // isWall: false,  // THIS WILL BE REPLACED BY TERRAINTYPE
 
             // UPDATE THIS OBJECT WITH ALL ALGO VARS (LIKE F, G ETC.) - USING CONSTS FROM NAMES FILE
 
             // TERRAIN
-            terrainType: pathNode,
+            // clickChoiceType: pathNode,
 
             // MAZEGEN
-            [primms]: {},
+            // [primms]: {},
 
             // PATHFINDING
-            [dijkstras]: {},
-
-        })
-    }
-    initialArr.push(row)
-}
+            // [dijkstras]: {},
+//
+//         })
+//     }
+// initialArr.push(row)
+// }
 
 
 
@@ -97,13 +137,6 @@ for (let i = 0; i < rowsInCol; i++) {
 // COMPONENT
 
 export default function Main() {
-
-    // const [mazeArr, setMazeArr] = React.useState(initialArr)
-    // const [specialNodes, setSpecialNodes] = React.useState({
-    //     start: null,
-    //     end: null,
-    //     current: null
-    // })
 
     const mazeArr = React.useRef(initialArr)
 
@@ -114,18 +147,18 @@ export default function Main() {
     })
 
 
-    const terrainTypeNames = [wallNode, pathNode]
+    const clickChoiceNames = [wallNode, pathNode]
 
     const [options, setOptions] = React.useState({
-        clickChoices: terrainTypeNames.map(name => {
-            if (name === pathNode) {
+        clickChoices: clickChoiceNames.map(name => {
+            if (name === wallNode) {
                 return {
-                    terrainType: name,
+                    clickChoiceType: name,
                     isSelected: true
                 }
             }
             return {
-                terrainType: name,
+                clickChoiceType: name,
                 isSelected: false
             }
         }),
@@ -143,59 +176,49 @@ export default function Main() {
 
 
     function updateMazeOnClick(coords) {
-        // setMazeArr(prevArr => {
-        //     const newArr = prevArr.map((row, i) => {
-        //         if (i != coords[0]) {
-        //             return row
-        //         }
-        //         const newRow = row.map((node, j) => {
-        //             if (j === coords[1]) {
-        //                 return {
-        //                     ...node,
-        //                     isWall: !node.isWall
-        //                 }
-        //             } else {
-        //                 return node
-        //             }
-        //         })
-        //         return newRow
-        //     })
-        //     return newArr
-        // })
         let node = mazeArr.current[coords[0]][coords[1]]
-        node = { 
-            ...node, 
-            terrainType: getClickChoiceTerrainType()
+        node = {
+            ...node,
+            clickChoiceType: getClickChoiceType()
         }
         mazeArr.current[coords[0]][coords[1]] = node
         forceUpdate()
     }
 
 
-    function updateClickChoice(terrainType) {
+    function updateClickChoice(clickChoiceType) {
         setOptions(prev => {
             return {
                 ...prev,
                 clickChoices: prev.clickChoices.map(choice => {
-                    if (terrainType === choice.terrainType) {
+                    if (clickChoiceType === choice.clickChoiceType) {
                         return {
-                            terrainType: choice.terrainType,
-                            isSelected: !choice.isSelected
+                            ...choice,
+                            isSelected: true
                         }
                     } else {
-                        return choice
+                        return {
+                            ...choice,
+                            isSelected: false
+                        }
                     }
                 })
             }
         })
     }
 
-    
-    function getClickChoiceTerrainType() {
+
+    function getClickChoiceType() {
         const newArr = options.clickChoices.filter(choice => {
             return choice.isSelected
         })
-        return newArr[0].terrainType
+        return newArr[0].clickChoiceType
+    }
+
+
+    function resetMaze() {
+        mazeArr.current = getResetMaze()
+        forceUpdate()
     }
 
 
@@ -214,6 +237,8 @@ export default function Main() {
                 </div>
                 <div className='main--options-container'>
                     <Options />
+                    {/* REPLACE WITH A PROPER ONE IN OPTIONS */}
+                    <button onClick={resetMaze}>Reset Grid</button>
                 </div>
             </main>
         </MazeContext.Provider>

@@ -7,6 +7,7 @@ export default function Maze() {
 
     const { 
         mazeArr, 
+        options
     } = React.useContext(MazeContext)
 
     const mazeRows = mazeArr.current.map((row, i) => {
