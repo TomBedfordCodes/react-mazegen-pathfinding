@@ -30,7 +30,7 @@ body {
 :root {
   --mainTextCol: #E8E6E3;
   --accent: rgb(82, 229, 82);
-  --accentHover: rgb(177, 253, 177);
+  --accentHover: rgb(106, 254, 106);
   --accentActive:  rgb(1, 184, 1);
   --secondaryBackgroundCol: #202425;
 }
@@ -113,6 +113,9 @@ main {
   padding-top: 1em;
   display: flex;
   flex-direction: column;
+
+  user-select: none;
+
 }
      
 .main--options-container {
@@ -121,6 +124,9 @@ main {
   margin-bottom: 1em;
   display: flex;
   flex-direction: column;
+
+  user-select: none;
+
 }
 
 
@@ -166,8 +172,8 @@ main {
 
 /* CSS ANIMATION CODE FOR WALL PLACING */
 
-.wall {
-  animation-name: wallAnimation;
+.click-choice-shared {
+  animation-name: clickChoiceAnimation;
   animation-duration: 0.3s;
   animation-timing-function: ease-out;
   animation-delay: 0;
@@ -175,11 +181,9 @@ main {
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   animation-play-state: running;
-  background-color: rgb(23, 23, 23);
-
 }
 
-@keyframes wallAnimation {
+@keyframes clickChoiceAnimation {
   0% {
     transform: scale(.3);
   }
@@ -187,6 +191,25 @@ main {
     transform: scale(1.0);
   }
 }
+
+
+
+/* NODE TYPES */
+
+.wall-node {
+  background-color: rgb(23, 23, 23);
+}
+
+.start-node {
+  background-color: rgb(0, 255, 0);
+}
+
+.end-node {
+  background-color: rgb(255, 0, 0);
+}
+
+
+
 
 
 
@@ -205,8 +228,9 @@ main {
 }
 
 .options--click-choice-panel--container {
-  height: 3em;
-  border: solid white 1px;
+  display: flex;
+  gap: 0.75em;
+  /* border: solid white 1px; */
 }
 
 
@@ -214,9 +238,23 @@ main {
   padding: 0.5em 1em;
   font-family: 'Karla', sans-serif;
   font-size: 1rem;
+  font-weight: 500;
+  background-color: var(--mainTextCol);
+  border: none;
+  border-radius: 5px;
 }
 
+.options--click-choice-btn:hover:enabled {
+  background-color: var(--accentHover);
+}
 
+.options--click-choice-btn:active:enabled {
+  background-color: var(--accentActive);
+}
+
+.btn-selected {
+  background-color: var(--accent);
+}
 
 
 

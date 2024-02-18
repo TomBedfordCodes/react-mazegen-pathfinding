@@ -4,15 +4,14 @@ import Options from './options/Options.jsx'
 
 import {
     wallNode, pathNode,
-    startNode, endNode,
+    startNode, endNode, currentNode,
     primms,
     dijkstras
 } from '../namedConstants.js'
 
 
 // NEXT:
-//      - ADD OPTIONS FOR CHOOSING TERRAIN - JUST WALL AND PATH FOR NOW
-//      - IMPLEMENT MAZEGEN SELECT AND BTN TO GENERATE, AND FIRST MAZEGEN ALGO
+//      - IMPLEMENT BFS PATHFINDING
 //      - CSS ANIMATIONS FOR EVERYTHING? JUST TWO BASIC STATES, AND MANUAL RERENDERING TO AVOID LAG
 
 // MAZE:
@@ -61,7 +60,6 @@ const nodeHeight = 11
 const nodesInRow = 53
 const rowsInCol = 39
 
-
 const templateNode = {
     nodeWidth,
     nodeHeight,
@@ -79,6 +77,7 @@ const templateNode = {
     // PATHFINDING
     [dijkstras]: {},
 }
+
 
 
 // ON STARTUP CREATE MAZE - 2D ARRAY OF NODE OBJECTS
@@ -136,18 +135,19 @@ function getResetMaze() {
 
 // COMPONENT
 
+
 export default function Main() {
 
     const mazeArr = React.useRef(initialArr)
 
     const specialNodes = React.useRef({
-        start: null,
-        end: null,
-        current: null
+        [startNode]: null,  // THESE WILL BE UPDATED WITH THE COORDS 
+        [endNode]: null,
+        [currentNode]: null
     })
 
 
-    const clickChoiceNames = [wallNode, pathNode]
+    const clickChoiceNames = [wallNode, pathNode, startNode, endNode]
 
     const [options, setOptions] = React.useState({
         clickChoices: clickChoiceNames.map(name => {
@@ -176,16 +176,55 @@ export default function Main() {
 
 
     function updateMazeOnClick(coords) {
+        const choiceType = getClickChoiceType()
+        // IF CLICK CHOICE IS START OR END NODE - EITHER UPDATE SPECIAL NODES REF WITH COORDS
+        //      OR, IF ALREADY EXISTS, RETURN FROM FUNCTION (SAFETY CHECK)
+        if (choiceType === startNode || choiceType === endNode) {
+            if (choiceType === startNode && specialNodes.current.startNode) {
+                return
+            } else if (choiceType === endNode && specialNodes.current.endNode) {
+                return
+            } else if (choiceType === startNode && !specialNodes.current.startNode) {
+                specialNodes.current.startNode = coords
+                // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
+                if (specialNodes.current.endNode &&
+                        coords[0] === specialNodes.current.endNode[0] && 
+                        coords[1] === specialNodes.current.endNode[1]) {
+                    specialNodes.current.endNode = null
+                }
+            } else if (choiceType === endNode && !specialNodes.current.endNode) {
+                specialNodes.current.endNode = coords
+
+                if (specialNodes.current.startNode &&
+                        coords[0] === specialNodes.current.startNode[0] && 
+                        coords[1] === specialNodes.current.startNode[1]) {
+                    specialNodes.current.startNode = null
+                }
+            }
+        }
+        // IF CHANGING A START/END NODE TO SOMETHING ELSE, REMOVE COORDS FROM SPECIAL NODES REF
+        else if (specialNodes.current.startNode &&
+                coords[0] === specialNodes.current.startNode[0] && 
+                coords[1] === specialNodes.current.startNode[1]) {
+            specialNodes.current.startNode = null
+        } else if (specialNodes.current.endNode &&
+                coords[0] === specialNodes.current.endNode[0] && 
+                coords[1] === specialNodes.current.endNode[1]) {
+            specialNodes.current.endNode = null
+        }
+        // UPDATE NODE WITH THE CHOSEN NODE TYPE
         let node = mazeArr.current[coords[0]][coords[1]]
         node = {
             ...node,
-            clickChoiceType: getClickChoiceType()
+            clickChoiceType: choiceType
         }
         mazeArr.current[coords[0]][coords[1]] = node
         forceUpdate()
     }
 
 
+
+    
     function updateClickChoice(clickChoiceType) {
         setOptions(prev => {
             return {
@@ -230,6 +269,7 @@ export default function Main() {
             specialNodes,
             options,
             updateClickChoice,
+            getClickChoiceType,
         }}>
             <main>
                 <div className='main--maze-container'>
@@ -238,7 +278,7 @@ export default function Main() {
                 <div className='main--options-container'>
                     <Options />
                     {/* REPLACE WITH A PROPER ONE IN OPTIONS */}
-                    <button onClick={resetMaze}>Reset Grid</button>
+                    <button onClick={resetMaze}>Reset Maze</button>
                 </div>
             </main>
         </MazeContext.Provider>

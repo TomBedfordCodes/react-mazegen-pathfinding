@@ -1,6 +1,8 @@
 import React from 'react'
 import { MazeContext } from '../Main'
-import { wallNode, pathNode, startNode } from '../../namedConstants.js'
+import {
+    wallNode, pathNode, startNode, endNode
+} from '../../namedConstants.js'
 
 
 export default function Node({ node }) {
@@ -22,19 +24,20 @@ export default function Node({ node }) {
     }
 
     const baseName = "maze--node"
+    const animated = "click-choice-shared"
     let className = baseName
     switch (node.clickChoiceType) {
         case wallNode: 
-            className = `${baseName} wall`
+            className = `${baseName} ${animated} wall-node`
             break
         case pathNode: 
             className = `${baseName}`
             break
         case startNode:
-            className = `${baseName} start`
+            className = `${baseName} ${animated} start-node`
             break
-        case startNode:
-            className = `${baseName} end`
+        case endNode:
+            className = `${baseName} ${animated} end-node`
             break
         default:
             className = baseName

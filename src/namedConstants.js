@@ -5,6 +5,8 @@ const pathNode = "pathNode"
 const startNode = "startNode"
 const endNode = "endNode"
 
+const currentNode = "currentNode"
+
 
 // NODE CHOICE NAMES
 const choiceNames = {
@@ -12,7 +14,7 @@ const choiceNames = {
     [pathNode]: "Path",
 
     [startNode]: "Start",
-    [endNode]: "End"
+    [endNode]: "End",
 }
 
 
@@ -27,7 +29,7 @@ const dijkstras = "dijkstras"
 
 export { 
     wallNode, pathNode, 
-    startNode, endNode,
+    startNode, endNode, currentNode,
     choiceNames,
     primms, 
     dijkstras, 
