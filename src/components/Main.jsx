@@ -12,7 +12,6 @@ import {
 
 // NEXT:
 //      - IMPLEMENT BFS PATHFINDING
-//      - CSS ANIMATIONS FOR EVERYTHING? JUST TWO BASIC STATES, AND MANUAL RERENDERING TO AVOID LAG
 
 // MAZE:
 //      EACH NODE TO BE AN OBJECT WITHIN THE 2D ARRAY - SEPARATE OUT ATTRS RELEVANT TO EACH ALGO.
@@ -21,6 +20,7 @@ import {
 //      PUT A 'SPECIAL NODES' OBJECT IN STATE AS WELL:
 //          THIS WILL TRACK THE LOCATION OF THE START/END/CURRENT NODES (AND ANY OTHERS TO BE ADDED).
 //          ON MAZE ARRAY UPDATE ALSO SET THE OBJECT IF ONE OF THE SPECIAL NODES CHANGES.
+//      USE THE SHARED CSS ANIMATION CLASS FOR ALL NODE COLOR CHANGES
 
 // OPTIONS:
 //      KEEP TRACK - IS MAZE GENERATION / PATHFINDING HAPPENING RIGHT NOW?
@@ -101,40 +101,10 @@ function getResetMaze() {
 }
 
 
-// for (let i = 0; i < rowsInCol; i++) {
-//     const row = []
-//     for (let j = 0; j < nodesInRow; j++) {
-//         row.push({
-//             ...templateNode,
-//             coords: [i, j],
-//             id: `${i}, ${j}`,
-            // nodeWidth,
-            // nodeHeight,
-
-            // isWall: false,  // THIS WILL BE REPLACED BY TERRAINTYPE
-
-            // UPDATE THIS OBJECT WITH ALL ALGO VARS (LIKE F, G ETC.) - USING CONSTS FROM NAMES FILE
-
-            // TERRAIN
-            // clickChoiceType: pathNode,
-
-            // MAZEGEN
-            // [primms]: {},
-
-            // PATHFINDING
-            // [dijkstras]: {},
-//
-//         })
-//     }
-// initialArr.push(row)
-// }
-
-
 
 
 
 // COMPONENT
-
 
 export default function Main() {
 
@@ -145,7 +115,6 @@ export default function Main() {
         [endNode]: null,
         [currentNode]: null
     })
-
 
     const clickChoiceNames = [wallNode, pathNode, startNode, endNode]
 
@@ -166,12 +135,20 @@ export default function Main() {
         // FILL OUT OPTIONS
         mazegenAlgo: "",
         pathfindingAlgo: "",
+
+        isSlowMo: false,
+
+    })
+
+    // TRACK WHETHER AN ALGO OR PATHFINDING IS RUNNING
+    const [isRunningInfo, setIsRunningInfo] = React.useState({
+        isRunning: false,
+        algorithm: "",
     })
 
 
     // ALLOWS US TO MANUALLY RENDER (SINCE WE'RE USING REFS TO CHOOSE WHEN TO RENDER)
     const [, forceUpdate] = React.useReducer(x => x + 1, 0)
-
 
 
 
@@ -270,6 +247,8 @@ export default function Main() {
             options,
             updateClickChoice,
             getClickChoiceType,
+            isRunningInfo,
+            setIsRunningInfo,
         }}>
             <main>
                 <div className='main--maze-container'>

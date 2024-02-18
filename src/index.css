@@ -196,15 +196,15 @@ main {
 
 /* NODE TYPES */
 
-.wall-node {
+.wallNode {
   background-color: rgb(23, 23, 23);
 }
 
-.start-node {
+.startNode {
   background-color: rgb(0, 255, 0);
 }
 
-.end-node {
+.endNode {
   background-color: rgb(255, 0, 0);
 }
 
@@ -230,6 +230,8 @@ main {
 .options--click-choice-panel--container {
   display: flex;
   gap: 0.75em;
+  margin: 0.5em 0;
+  width: 50%;
   /* border: solid white 1px; */
 }
 
@@ -242,10 +244,12 @@ main {
   background-color: var(--mainTextCol);
   border: none;
   border-radius: 5px;
+
+  flex: 1 1 0px;
 }
 
 .options--click-choice-btn:hover:enabled {
-  background-color: var(--accentHover);
+  background-color: var(--accent);
 }
 
 .options--click-choice-btn:active:enabled {
@@ -255,6 +259,17 @@ main {
 .btn-selected {
   background-color: var(--accent);
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

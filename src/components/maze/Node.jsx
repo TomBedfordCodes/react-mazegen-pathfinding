@@ -7,10 +7,7 @@ import {
 
 export default function Node({ node }) {
 
-    const { 
-        updateMazeOnClick,
-        options
-    } = React.useContext(MazeContext)
+    const { updateMazeOnClick } = React.useContext(MazeContext)
 
     const { 
         nodeWidth, 
@@ -28,20 +25,22 @@ export default function Node({ node }) {
     let className = baseName
     switch (node.clickChoiceType) {
         case wallNode: 
-            className = `${baseName} ${animated} wall-node`
+            className = `${baseName} ${animated} ${wallNode}`
             break
         case pathNode: 
             className = `${baseName}`
             break
         case startNode:
-            className = `${baseName} ${animated} start-node`
+            className = `${baseName} ${animated} ${startNode}`
             break
         case endNode:
-            className = `${baseName} ${animated} end-node`
+            className = `${baseName} ${animated} ${endNode}`
             break
         default:
             className = baseName
     }
+
+    // HAVE ANOTHER SWITCH CASE FOR ALGORITHM OVERLAYS WHICH WILL CHANGE THE CLASSES
 
 
     function checkBtnDown(e) {

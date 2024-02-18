@@ -23,6 +23,7 @@ const primms = "primms"
 
 
 // PATHFINDING ALGOS
+const bfs = "bfs"
 const dijkstras = "dijkstras"
 
 
@@ -32,5 +33,5 @@ export {
     startNode, endNode, currentNode,
     choiceNames,
     primms, 
-    dijkstras, 
+    bfs, dijkstras,
 }

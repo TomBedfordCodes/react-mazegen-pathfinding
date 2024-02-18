@@ -10,8 +10,8 @@ export default function Options() {
     return (
         <div className='options--container'>
             <h2>Options</h2>
-            <ClickChoicePanel choices={[wallNode, pathNode, startNode, endNode]} />
-            {/* <ClickChoicePanel /> */}
+            <ClickChoicePanel choices={[wallNode, pathNode]} />
+            <ClickChoicePanel choices={[startNode, endNode]} />
         </div>
     )
 }
