@@ -1,5 +1,5 @@
 import React from 'react'
-import { MazeContext } from '../Main'
+import { MainContext } from '../Main'
 import { choiceNames } from '../../namedConstants'
 import { startNode, endNode } from '../../namedConstants'
 
@@ -7,7 +7,7 @@ import { startNode, endNode } from '../../namedConstants'
 
 export default function ClickChoicePanel({ choices }) {
 
-    const { updateClickChoice, getClickChoiceType, specialNodes } = React.useContext(MazeContext)
+    const { updateClickChoice, getClickChoiceType, specialNodes } = React.useContext(MainContext)
 
     const choiceBtnElements = choices.map((choice, i) => {
         let isDisabled = false

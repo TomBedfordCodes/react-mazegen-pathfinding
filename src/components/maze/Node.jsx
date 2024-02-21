@@ -1,5 +1,5 @@
 import React from 'react'
-import { MazeContext } from '../Main'
+import { MainContext } from '../Main'
 import {
     wallNode, pathNode, startNode, endNode
 } from '../../namedConstants.js'
@@ -7,7 +7,7 @@ import {
 
 export default function Node({ node }) {
 
-    const { updateMazeOnClick } = React.useContext(MazeContext)
+    const { updateMazeOnClick } = React.useContext(MainContext)
 
     const { 
         nodeWidth, 
@@ -41,8 +41,11 @@ export default function Node({ node }) {
     }
 
     // HAVE ANOTHER SWITCH CASE FOR ALGORITHM OVERLAYS WHICH WILL CHANGE THE CLASSES
+    //      SEARCHED
+    //      FRONTIER
+    //      PATH
 
-
+    
     function checkBtnDown(e) {
         if (e.buttons === 1) {
             updateMazeOnClick(coords)

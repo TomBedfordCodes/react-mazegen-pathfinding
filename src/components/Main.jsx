@@ -6,12 +6,11 @@ import {
     wallNode, pathNode,
     startNode, endNode, currentNode,
     primms,
-    dijkstras
+    bfs, dijkstras, 
 } from '../namedConstants.js'
 
 
-// NEXT:
-//      - IMPLEMENT BFS PATHFINDING
+// NEXT - IMPLEMENT BFS PATHFINDING (THEN NODE BACKGROUND COLOURS TO SHOW IT)
 
 // MAZE:
 //      EACH NODE TO BE AN OBJECT WITHIN THE 2D ARRAY - SEPARATE OUT ATTRS RELEVANT TO EACH ALGO.
@@ -52,7 +51,9 @@ import {
 
 
 
-const MazeContext = React.createContext()
+const MainContext = React.createContext()
+
+
 
 
 const nodeWidth = 11
@@ -60,13 +61,23 @@ const nodeHeight = 11
 const nodesInRow = 53
 const rowsInCol = 39
 
+
+
+const templatePathfinding = {
+    parentNode: null,
+    isSearched: false,
+    isFrontier: false,
+    isDrawnPathNode: false,
+}
+
 const templateNode = {
     nodeWidth,
     nodeHeight,
-    coords: [],
+    coords: [],  // TWO VALUES IN ARRAY FOR POSITION IN 2D MAZE ARRAY
     id: ``,
 
     // UPDATE THIS OBJECT WITH ALL ALGO VARS (LIKE F, G ETC.) - USING CONSTS FROM NAMES FILE
+    //      ALGO VARS WILL NEED TO BE RESET ON PATHFINDING RESET TOO (ALREADY HANDLED FOR MAZE RESET)
 
     // CHOSEN NODE TYPE
     clickChoiceType: pathNode,
@@ -75,7 +86,13 @@ const templateNode = {
     [primms]: {},
 
     // PATHFINDING
-    [dijkstras]: {},
+    pathfinding: {...templatePathfinding},
+    // [dijkstras]: {},
+    
+    // [bfs]: {
+    //     parentNode: null,  // holds ref to node
+    //     isSearched: false,
+    // }
 }
 
 
@@ -104,9 +121,13 @@ function getResetMaze() {
 
 
 
+
 // COMPONENT
 
+
 export default function Main() {
+
+
 
     const mazeArr = React.useRef(initialArr)
 
@@ -131,20 +152,16 @@ export default function Main() {
                 isSelected: false
             }
         }),
-
         // FILL OUT OPTIONS
         mazegenAlgo: "",
-        pathfindingAlgo: "",
-
-        isSlowMo: false,
-
+        pathfindingAlgo: bfs,
+        
+        isSlowMo: true,
     })
 
-    // TRACK WHETHER AN ALGO OR PATHFINDING IS RUNNING
-    const [isRunningInfo, setIsRunningInfo] = React.useState({
-        isRunning: false,
-        algorithm: "",
-    })
+
+    const [pathfindingIsRunning, setPathfindingIsRunning] = React.useState(false)
+    const [mazegenIsRunning, setMazegenIsRunning] = React.useState(false)
 
 
     // ALLOWS US TO MANUALLY RENDER (SINCE WE'RE USING REFS TO CHOOSE WHEN TO RENDER)
@@ -164,29 +181,21 @@ export default function Main() {
             } else if (choiceType === startNode && !specialNodes.current.startNode) {
                 specialNodes.current.startNode = coords
                 // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
-                if (specialNodes.current.endNode &&
-                        coords[0] === specialNodes.current.endNode[0] && 
-                        coords[1] === specialNodes.current.endNode[1]) {
+                if (_.isEqual(coords, specialNodes.current.endNode)) {
                     specialNodes.current.endNode = null
                 }
             } else if (choiceType === endNode && !specialNodes.current.endNode) {
                 specialNodes.current.endNode = coords
 
-                if (specialNodes.current.startNode &&
-                        coords[0] === specialNodes.current.startNode[0] && 
-                        coords[1] === specialNodes.current.startNode[1]) {
+                if (_.isEqual(coords, specialNodes.current.startNode)) {
                     specialNodes.current.startNode = null
                 }
             }
         }
         // IF CHANGING A START/END NODE TO SOMETHING ELSE, REMOVE COORDS FROM SPECIAL NODES REF
-        else if (specialNodes.current.startNode &&
-                coords[0] === specialNodes.current.startNode[0] && 
-                coords[1] === specialNodes.current.startNode[1]) {
+        else if (_.isEqual(coords, specialNodes.current.startNode)) {
             specialNodes.current.startNode = null
-        } else if (specialNodes.current.endNode &&
-                coords[0] === specialNodes.current.endNode[0] && 
-                coords[1] === specialNodes.current.endNode[1]) {
+        } else if (_.isEqual(coords, specialNodes.current.endNode)) {
             specialNodes.current.endNode = null
         }
         // UPDATE NODE WITH THE CHOSEN NODE TYPE
@@ -232,23 +241,52 @@ export default function Main() {
     }
 
 
+
+    function runPathfinding() {
+        setPathfindingIsRunning(true)
+        setMazegenIsRunning(false)
+    }
+
+    function runMazegen() {
+        setMazegenIsRunning(true)
+        setPathfindingIsRunning(false)
+    }
+
+    function stopPathfinding() {
+        setPathfindingIsRunning(false)
+    }
+
+    function stopMazegen() {
+        setMazegenIsRunning(false)
+    }
+
     function resetMaze() {
         mazeArr.current = getResetMaze()
         forceUpdate()
     }
 
+    // console.log("Rerendered main")
+
 
     return (
-        <MazeContext.Provider value={{
+        <MainContext.Provider value={{
             updateMazeOnClick,
             forceUpdate,
             mazeArr,
+            resetMaze,
+            templatePathfinding,
             specialNodes,
             options,
             updateClickChoice,
             getClickChoiceType,
-            isRunningInfo,
-            setIsRunningInfo,
+            runPathfinding,
+            runMazegen,
+            pathfindingIsRunning,
+            mazegenIsRunning,
+            stopPathfinding,
+            stopMazegen,
+            nodesInRow,
+            rowsInCol,
         }}>
             <main>
                 <div className='main--maze-container'>
@@ -256,12 +294,10 @@ export default function Main() {
                 </div>
                 <div className='main--options-container'>
                     <Options />
-                    {/* REPLACE WITH A PROPER ONE IN OPTIONS */}
-                    <button onClick={resetMaze}>Reset Maze</button>
                 </div>
             </main>
-        </MazeContext.Provider>
+        </MainContext.Provider>
     )
 }
 
-export { MazeContext }
+export { MainContext }
