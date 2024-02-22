@@ -46,6 +46,7 @@ import {
 // 	            just above maze. Possible to snap view to maze?
 //      SEPARATE OUT MAZE AND OPTIONS STATES INTO THEIR RESPECTIVE COMPONENTS AND EXPOSE TO MAIN
 //      ADD 'VIA' SPECIAL NODE
+//      TUTORIAL (MAYBE A MODAL) SHOWING HOW TO USE IT
 
 
 
@@ -67,7 +68,7 @@ const templatePathfinding = {
     parentNode: null,
     isSearched: false,
     isFrontier: false,
-    isDrawnPathNode: false,
+    isDrawnPath: false,
 }
 
 const templateNode = {
@@ -86,7 +87,7 @@ const templateNode = {
     [primms]: {},
 
     // PATHFINDING
-    pathfinding: {...templatePathfinding},
+    pathfinding: { ...templatePathfinding },
     // [dijkstras]: {},
     
     // [bfs]: {
@@ -110,6 +111,7 @@ function getResetMaze() {
                 ...templateNode,
                 coords: [i, j],
                 id: `${i}, ${j}`,
+                pathfinding: { ...templatePathfinding }
             })
         }
         starterArr.push(row)
@@ -118,6 +120,11 @@ function getResetMaze() {
 }
 
 
+const templateSpecialNodes = {
+        [startNode]: null,  // THESE WILL BE UPDATED WITH THE COORDS 
+        [endNode]: null,
+        [currentNode]: null
+    }
 
 
 
@@ -131,11 +138,7 @@ export default function Main() {
 
     const mazeArr = React.useRef(initialArr)
 
-    const specialNodes = React.useRef({
-        [startNode]: null,  // THESE WILL BE UPDATED WITH THE COORDS 
-        [endNode]: null,
-        [currentNode]: null
-    })
+    const specialNodes = React.useRef({ ...templateSpecialNodes })
 
     const clickChoiceNames = [wallNode, pathNode, startNode, endNode]
 
@@ -262,6 +265,8 @@ export default function Main() {
 
     function resetMaze() {
         mazeArr.current = getResetMaze()
+        specialNodes.current = { ...templateSpecialNodes }
+        console.log(specialNodes.current)
         forceUpdate()
     }
 

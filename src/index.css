@@ -209,6 +209,19 @@ main {
 }
 
 
+.drawnPathNode {
+  background-color: #0000CD;
+
+}
+
+.searchedNode {
+  background-color: #1E90FF
+}
+
+.frontierNode {
+  background-color: #00BFFF
+}
+
 
 
 

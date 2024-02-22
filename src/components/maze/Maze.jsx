@@ -15,6 +15,8 @@ export default function Maze() {
         options,
         specialNodes,
         templatePathfinding,
+        nodesInRow,
+        rowsInCol,
     } = React.useContext(MainContext)
 
     const [, forceMazeUpdate] = React.useReducer(x => x + 1, 0)
@@ -55,6 +57,45 @@ export default function Maze() {
         const parentNode = getNodeFromCoords(coords).pathfinding.parentNode
         return parentNode.coords
     }
+
+
+    function getAdjCellFromPassage(currCoords, adjPassageCoords) {
+        if (adjPassageCoords[0] > currCoords[0]) {
+            return [currCoords[0] + 2, currCoords[1]]
+        } else if (adjPassageCoords[0] < currCoords[0]) {
+            return [currCoords[0] - 2, currCoords[1]]
+        } else if (adjPassageCoords[1] > currCoords[1]) {
+            return [currCoords[0], currCoords[1] + 2]
+        } else if (adjPassageCoords[1] < currCoords[1]) {
+            return [currCoords[0], currCoords[1] - 2]
+        }
+    }
+    // def get_adj_cell_from_passage(curr_node: (int, int), adj_passage: (int, int)) -> (int, int):
+    //     if adj_passage[0] > curr_node[0]:
+    //         return curr_node[0] + 2, curr_node[1]
+    //     elif adj_passage[0] < curr_node[0]:
+    //         return curr_node[0] - 2, curr_node[1]
+    //     elif adj_passage[1] > curr_node[1]:
+    //         return curr_node[0], curr_node[1] + 2
+    //     elif adj_passage[1] < curr_node[1]:
+    //         return curr_node[0], curr_node[1] - 2
+
+
+
+
+    function getAdjCells(nodeCoords, ordered = false) {
+
+    }
+    // def get_adj_cells(node: (int, int), ordered: bool = False) -> list:
+    //     # returns adjacent cells (visited and unvisited) in random order (unless ordered=True, then in order SENW)
+    //     row, col = node[0], node[1]
+    //     cells = [(row + 2, col), (row, col + 2), (row - 2, col), (row, col - 2)]
+    //     cells = [x for x in cells if is_within_bounds(x)]
+    //     if ordered: return cells
+    //     random.shuffle(cells)
+    //     return cells
+
+
 
     function getAdjPassages(coords) {
         const row = coords[0]
@@ -127,8 +168,13 @@ export default function Maze() {
     }
 
 
+    function makeNodeFrontier(coords) {
+        mazeArr.current[coords[0]][coords[1]].pathfinding.isFrontier = true
+    }
+
+
     function makeNodeDrawnPath(coords) {
-        mazeArr.current[coords[0]][coords[1]].pathfinding.isDrawnPathNode = true
+        mazeArr.current[coords[0]][coords[1]].pathfinding.isDrawnPath = true
     }
 
 
@@ -148,18 +194,22 @@ export default function Maze() {
         )
     })
 
+    // console.log("maze re-rendered")
+
     return (
         <MazeContext.Provider value={{
             forceMazeUpdate,
             resetPathfinding,
             updatePathfindingParentNode,
             getPathfindingParentCoords,
+            getAdjCellFromPassage,
             getAdjPassages,
             isNodeSearched,
             isWithinBounds,
             isPassable,
             makeNodeSearched,
             makeNodeWall,
+            makeNodeFrontier,
             makeNodeDrawnPath,
         }}>
             <div className='maze--container'>

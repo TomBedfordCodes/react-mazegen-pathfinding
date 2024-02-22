@@ -1,7 +1,7 @@
 import React from 'react'
 import { MainContext } from '../Main'
 import {
-    wallNode, pathNode, startNode, endNode
+    wallNode, pathNode, startNode, endNode, drawnPathNode, searchedNode, frontierNode,
 } from '../../namedConstants.js'
 
 
@@ -30,20 +30,27 @@ export default function Node({ node }) {
         case pathNode: 
             className = `${baseName}`
             break
+        default:
+            className = baseName
+    }
+
+    if (node.pathfinding.isDrawnPath) {
+        className = `${baseName} ${drawnPathNode}`  // ${animated} 
+    } else if (node.pathfinding.isSearched) {
+        className = `${baseName} ${searchedNode}`  // ${animated} 
+    } else if (node.pathfinding.isFrontier) {
+        className = `${baseName} ${frontierNode}`  // ${animated} 
+    }
+
+    switch (node.clickChoiceType) {
         case startNode:
             className = `${baseName} ${animated} ${startNode}`
             break
         case endNode:
             className = `${baseName} ${animated} ${endNode}`
             break
-        default:
-            className = baseName
     }
 
-    // HAVE ANOTHER SWITCH CASE FOR ALGORITHM OVERLAYS WHICH WILL CHANGE THE CLASSES
-    //      SEARCHED
-    //      FRONTIER
-    //      PATH
 
     
     function checkBtnDown(e) {

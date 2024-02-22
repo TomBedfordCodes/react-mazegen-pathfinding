@@ -5,6 +5,9 @@ const pathNode = "pathNode"
 const startNode = "startNode"
 const endNode = "endNode"
 
+const drawnPathNode = "drawnPathNode"
+const searchedNode = "searchedNode"
+const frontierNode = "frontierNode"
 const currentNode = "currentNode"
 
 
@@ -30,7 +33,7 @@ const dijkstras = "dijkstras"
 
 export { 
     wallNode, pathNode, 
-    startNode, endNode, currentNode,
+    startNode, endNode, currentNode, drawnPathNode, searchedNode, frontierNode,
     choiceNames,
     primms, 
     bfs, dijkstras,
