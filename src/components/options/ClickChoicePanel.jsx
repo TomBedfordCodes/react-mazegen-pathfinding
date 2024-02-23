@@ -4,7 +4,6 @@ import { choiceNames } from '../../namedConstants'
 import { startNode, endNode } from '../../namedConstants'
 
 
-
 export default function ClickChoicePanel({ choices }) {
 
     const { updateClickChoice, getClickChoiceType, specialNodes } = React.useContext(MainContext)

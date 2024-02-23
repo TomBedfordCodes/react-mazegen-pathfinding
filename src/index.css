@@ -172,8 +172,29 @@ main {
 
 /* CSS ANIMATION CODE FOR WALL PLACING */
 
-.click-choice-shared {
-  animation-name: clickChoiceAnimation;
+.animate-node {
+  animation-name: node-animation;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+@keyframes node-animation {
+  0% {
+    transform: scale(.3);
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}
+
+
+.animate-path {
+  animation-name: path-animation;
   animation-duration: 0.3s;
   animation-timing-function: ease-out;
   animation-delay: 0;
@@ -183,9 +204,9 @@ main {
   animation-play-state: running;
 }
 
-@keyframes clickChoiceAnimation {
+@keyframes path-animation {
   0% {
-    transform: scale(.3);
+    transform: scale(0.7);
   }
   100% {
     transform: scale(1.0);
@@ -208,10 +229,9 @@ main {
   background-color: rgb(255, 0, 0);
 }
 
-
 .drawnPathNode {
   background-color: #0000CD;
-
+  /* transition: background-color 0.6s; */
 }
 
 .searchedNode {
@@ -220,6 +240,10 @@ main {
 
 .frontierNode {
   background-color: #00BFFF
+}
+
+.currentNode {
+  background-color: rgb(128, 0, 128);
 }
 
 

@@ -1,7 +1,6 @@
 import React from 'react'
 import { MazeContext } from '../maze/Maze'
 import { MainContext } from '../Main'
-import { currentNode } from '../../namedConstants'
 
 
 export default function DrawPath({ isDrawingPath }) {
@@ -29,10 +28,12 @@ export default function DrawPath({ isDrawingPath }) {
             return
         }
         makeNodeDrawnPath(currNodeCoords.current)
-        // if (options.isSlowMo) {
-        //     forceMazeUpdate()
-        // }
-        if (_.isEqual(currNodeCoords.current, specialNodes.current.startNode)) {
+        if (options.isSlowMo) {
+            forceMazeUpdate()
+        }
+        // if (_.isEqual(currNodeCoords.current, specialNodes.current.startNode)) {
+        if (currNodeCoords.current[0] === specialNodes.current.startNode[0] &&
+            currNodeCoords.current[1] === specialNodes.current.startNode[1]) {
             stopPathfinding()
             forceMazeUpdate()
             return
@@ -43,7 +44,8 @@ export default function DrawPath({ isDrawingPath }) {
         }
         currNodeCoords.current = getPathfindingParentCoords(currNodeCoords.current)
 
-        setTimeout(localPathUpdate, 20)
+        if (options.isSlowMo) {setTimeout(localPathUpdate, 18)}
+        else {setTimeout(localPathUpdate(0))}
 
     }, [isDrawingPath, depsLocalPathUpdate])
 

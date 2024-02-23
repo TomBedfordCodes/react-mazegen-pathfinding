@@ -10,19 +10,15 @@ import {
 } from '../namedConstants.js'
 
 
-// NEXT - IMPLEMENT BFS PATHFINDING (THEN NODE BACKGROUND COLOURS TO SHOW IT)
+// NEXT - REDESIGN OPTIONS MENU - ADD SLOW-MO TOGGLE (ANY OTHER TOGGLES?)
 
-// MAZE:
-//      EACH NODE TO BE AN OBJECT WITHIN THE 2D ARRAY - SEPARATE OUT ATTRS RELEVANT TO EACH ALGO.
-//      CREATE A SEPARATE FILE WITH ALL THE ALGO/TERRAIN/PATHFINDING NAMES AS CONSTS AND USE 
-//            THESE TO AVOID MISSPELLINGS.
-//      PUT A 'SPECIAL NODES' OBJECT IN STATE AS WELL:
-//          THIS WILL TRACK THE LOCATION OF THE START/END/CURRENT NODES (AND ANY OTHERS TO BE ADDED).
-//          ON MAZE ARRAY UPDATE ALSO SET THE OBJECT IF ONE OF THE SPECIAL NODES CHANGES.
-//      USE THE SHARED CSS ANIMATION CLASS FOR ALL NODE COLOR CHANGES
+// COLOURS:
+//      PURPLE = (128, 0, 128)        - current
+//      VIOLET = (171, 63, 220)       - hunt and kill starting row/column
+//      FORESTGREEN = (0, 90, 0)
+//      FORESTSEARCHGREEN = (0, 140, 0)
 
 // OPTIONS:
-//      KEEP TRACK - IS MAZE GENERATION / PATHFINDING HAPPENING RIGHT NOW?
 //      TERRAIN FOR CLICKING (track state so only one can be selected - can be null):
 //          WALL; PATH (normal speed); FOREST (x2 slower); MOUNTAIN (x5 slower)
 //      SPECIAL NODES FOR CLICKING (same state as terrain):
@@ -50,11 +46,7 @@ import {
 
 
 
-
-
 const MainContext = React.createContext()
-
-
 
 
 const nodeWidth = 11
@@ -63,38 +55,35 @@ const nodesInRow = 53
 const rowsInCol = 39
 
 
-
-const templatePathfinding = {
-    parentNode: null,
-    isSearched: false,
-    isFrontier: false,
-    isDrawnPath: false,
+function getTemplatePathfinding() {
+    return {
+        parentNode: null,
+        isSearched: false,
+        isFrontier: false,
+        isDrawnPath: false,
+    }
 }
 
-const templateNode = {
-    nodeWidth,
-    nodeHeight,
-    coords: [],  // TWO VALUES IN ARRAY FOR POSITION IN 2D MAZE ARRAY
-    id: ``,
-
-    // UPDATE THIS OBJECT WITH ALL ALGO VARS (LIKE F, G ETC.) - USING CONSTS FROM NAMES FILE
-    //      ALGO VARS WILL NEED TO BE RESET ON PATHFINDING RESET TOO (ALREADY HANDLED FOR MAZE RESET)
-
-    // CHOSEN NODE TYPE
-    clickChoiceType: pathNode,
-
-    // MAZEGEN
-    [primms]: {},
-
-    // PATHFINDING
-    pathfinding: { ...templatePathfinding },
-    // [dijkstras]: {},
+function getTemplateNode() {
+    return {
+        nodeWidth,
+        nodeHeight,
+        coords: [],  // TWO VALUES IN ARRAY FOR POSITION IN 2D MAZE ARRAY
+        id: ``,
     
-    // [bfs]: {
-    //     parentNode: null,  // holds ref to node
-    //     isSearched: false,
-    // }
+        // UPDATE THIS OBJECT WITH ALL ALGO VARS (LIKE F, G ETC.)
+    
+        // CHOSEN NODE TYPE
+        clickChoiceType: pathNode,
+    
+        // MAZEGEN
+        [primms]: {},
+    
+        // PATHFINDING
+        pathfinding: getTemplatePathfinding()
+    }
 }
+
 
 
 
@@ -107,12 +96,10 @@ function getResetMaze() {
     for (let i = 0; i < rowsInCol; i++) {
         const row = []
         for (let j = 0; j < nodesInRow; j++) {
-            row.push({
-                ...templateNode,
-                coords: [i, j],
-                id: `${i}, ${j}`,
-                pathfinding: { ...templatePathfinding }
-            })
+            const node = getTemplateNode()
+            node.coords = [i, j]
+            node.id = `${i}, ${j}`
+            row.push(node)
         }
         starterArr.push(row)
     }
@@ -121,7 +108,7 @@ function getResetMaze() {
 
 
 const templateSpecialNodes = {
-        [startNode]: null,  // THESE WILL BE UPDATED WITH THE COORDS 
+        [startNode]: null,  // UPDATED WITH THE COORDS 
         [endNode]: null,
         [currentNode]: null
     }
@@ -133,8 +120,6 @@ const templateSpecialNodes = {
 
 
 export default function Main() {
-
-
 
     const mazeArr = React.useRef(initialArr)
 
@@ -159,7 +144,7 @@ export default function Main() {
         mazegenAlgo: "",
         pathfindingAlgo: bfs,
         
-        isSlowMo: true,
+        isSlowMo: false,
     })
 
 
@@ -169,7 +154,6 @@ export default function Main() {
 
     // ALLOWS US TO MANUALLY RENDER (SINCE WE'RE USING REFS TO CHOOSE WHEN TO RENDER)
     const [, forceUpdate] = React.useReducer(x => x + 1, 0)
-
 
 
     function updateMazeOnClick(coords) {
@@ -184,21 +168,33 @@ export default function Main() {
             } else if (choiceType === startNode && !specialNodes.current.startNode) {
                 specialNodes.current.startNode = coords
                 // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
-                if (_.isEqual(coords, specialNodes.current.endNode)) {
+                if (specialNodes.current.endNode &&
+                    coords[0] === specialNodes.current.endNode[0] &&
+                    coords[1] === specialNodes.current.endNode[1]) {
+                    // _.isEqual(coords, specialNodes.current.endNode)) {
                     specialNodes.current.endNode = null
                 }
             } else if (choiceType === endNode && !specialNodes.current.endNode) {
                 specialNodes.current.endNode = coords
 
-                if (_.isEqual(coords, specialNodes.current.startNode)) {
+                if (specialNodes.current.startNode &&
+                    coords[0] === specialNodes.current.startNode[0] &&
+                    coords[1] === specialNodes.current.startNode[1]) {
+                    // _.isEqual(coords, specialNodes.current.startNode)) {
                     specialNodes.current.startNode = null
                 }
             }
         }
         // IF CHANGING A START/END NODE TO SOMETHING ELSE, REMOVE COORDS FROM SPECIAL NODES REF
-        else if (_.isEqual(coords, specialNodes.current.startNode)) {
+        // else if (_.isEqual(coords, specialNodes.current.startNode)) {
+        else if (specialNodes.current.startNode &&
+            coords[0] === specialNodes.current.startNode[0] &&
+            coords[1] === specialNodes.current.startNode[1]) {
             specialNodes.current.startNode = null
-        } else if (_.isEqual(coords, specialNodes.current.endNode)) {
+        // } else if (_.isEqual(coords, specialNodes.current.endNode)) {
+        } else if (specialNodes.current.endNode &&
+            coords[0] === specialNodes.current.endNode[0] &&
+            coords[1] === specialNodes.current.endNode[1]) {
             specialNodes.current.endNode = null
         }
         // UPDATE NODE WITH THE CHOSEN NODE TYPE
@@ -243,8 +239,6 @@ export default function Main() {
         return newArr[0].clickChoiceType
     }
 
-
-
     function runPathfinding() {
         setPathfindingIsRunning(true)
         setMazegenIsRunning(false)
@@ -266,9 +260,19 @@ export default function Main() {
     function resetMaze() {
         mazeArr.current = getResetMaze()
         specialNodes.current = { ...templateSpecialNodes }
-        console.log(specialNodes.current)
         forceUpdate()
     }
+
+    function resetPathfinding() {
+        for (let row of mazeArr.current) {
+            for (let node of row) {
+                node.pathfinding = getTemplatePathfinding()
+            }
+        }
+        specialNodes.current.currentNode = null
+        forceUpdate()
+    }
+
 
     // console.log("Rerendered main")
 
@@ -279,7 +283,7 @@ export default function Main() {
             forceUpdate,
             mazeArr,
             resetMaze,
-            templatePathfinding,
+            resetPathfinding,
             specialNodes,
             options,
             updateClickChoice,

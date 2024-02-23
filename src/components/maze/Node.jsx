@@ -1,13 +1,15 @@
 import React from 'react'
 import { MainContext } from '../Main'
+import { MazeContext } from './Maze.jsx'
 import {
-    wallNode, pathNode, startNode, endNode, drawnPathNode, searchedNode, frontierNode,
+    wallNode, pathNode, startNode, endNode, drawnPathNode, searchedNode, frontierNode, currentNode,
 } from '../../namedConstants.js'
 
 
 export default function Node({ node }) {
 
-    const { updateMazeOnClick } = React.useContext(MainContext)
+    const { updateMazeOnClick, options, specialNodes } = React.useContext(MainContext)
+    const { nodeIsCurrent } = React.useContext(MazeContext)
 
     const { 
         nodeWidth, 
@@ -21,11 +23,12 @@ export default function Node({ node }) {
     }
 
     const baseName = "maze--node"
-    const animated = "click-choice-shared"
+    const animated = "animate-node"
+    const pathAnimated = "animate-path"
     let className = baseName
     switch (node.clickChoiceType) {
         case wallNode: 
-            className = `${baseName} ${animated} ${wallNode}`
+            className = `${animated} ${wallNode}`  // ${baseName} 
             break
         case pathNode: 
             className = `${baseName}`
@@ -35,19 +38,21 @@ export default function Node({ node }) {
     }
 
     if (node.pathfinding.isDrawnPath) {
-        className = `${baseName} ${drawnPathNode}`  // ${animated} 
+        className = `${options.isSlowMo && pathAnimated} ${drawnPathNode}`  // ${baseName} 
+    } else if (specialNodes.current.currentNode && nodeIsCurrent(coords)) {
+        className = `${options.isSlowMo && pathAnimated} ${currentNode}`  // ${baseName} 
     } else if (node.pathfinding.isSearched) {
-        className = `${baseName} ${searchedNode}`  // ${animated} 
+        className = `${searchedNode}`  // ${baseName} 
     } else if (node.pathfinding.isFrontier) {
-        className = `${baseName} ${frontierNode}`  // ${animated} 
+        className = `${options.isSlowMo && animated} ${frontierNode}`  // ${baseName} 
     }
 
     switch (node.clickChoiceType) {
         case startNode:
-            className = `${baseName} ${animated} ${startNode}`
+            className = `${animated} ${startNode}`  // ${baseName} 
             break
         case endNode:
-            className = `${baseName} ${animated} ${endNode}`
+            className = `${animated} ${endNode}`  //${baseName} 
             break
     }
 

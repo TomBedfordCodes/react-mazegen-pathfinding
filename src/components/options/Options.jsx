@@ -14,8 +14,10 @@ export default function Options() {
         pathfindingIsRunning,
         runPathfinding,
         stopPathfinding,
+        resetPathfinding,
     } = React.useContext(MainContext)
 
+    // console.log("options re-rendered")
     
     return (
         <div className='options--container'>
@@ -37,6 +39,9 @@ export default function Options() {
             </button>
             <button onClick={resetMaze}>
                 Reset Maze
+            </button>
+            <button onClick={resetPathfinding}>
+                Reset Pathfinding
             </button>
         </div>
     )
