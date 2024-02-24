@@ -15,6 +15,7 @@ export default function Options() {
         runPathfinding,
         stopPathfinding,
         resetPathfinding,
+        toggleIsSlow,
     } = React.useContext(MainContext)
 
     // console.log("options re-rendered")
@@ -43,6 +44,15 @@ export default function Options() {
             <button onClick={resetPathfinding}>
                 Reset Pathfinding
             </button>
+            <br />
+            <label htmlFor='slow-mo-checkbox'>Slow-Mo</label>
+            <input 
+                type='checkbox' 
+                aria-label='Toggle slow-mo' 
+                onChange={toggleIsSlow}
+                id="slow-mo-checkbox"
+                defaultChecked
+            />
         </div>
     )
 }

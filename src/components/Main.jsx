@@ -144,7 +144,7 @@ export default function Main() {
         mazegenAlgo: "",
         pathfindingAlgo: bfs,
         
-        isSlowMo: false,
+        isSlowMo: true,
     })
 
 
@@ -208,8 +208,6 @@ export default function Main() {
     }
 
 
-
-    
     function updateClickChoice(clickChoiceType) {
         setOptions(prev => {
             return {
@@ -231,12 +229,20 @@ export default function Main() {
         })
     }
 
-
     function getClickChoiceType() {
         const newArr = options.clickChoices.filter(choice => {
             return choice.isSelected
         })
         return newArr[0].clickChoiceType
+    }
+
+    function toggleIsSlow() {
+        setOptions(prev => {
+            return {
+                ...prev,
+                isSlowMo: !prev.isSlowMo
+            }
+        })
     }
 
     function runPathfinding() {
@@ -264,6 +270,7 @@ export default function Main() {
     }
 
     function resetPathfinding() {
+        stopPathfinding()
         for (let row of mazeArr.current) {
             for (let node of row) {
                 node.pathfinding = getTemplatePathfinding()
@@ -286,6 +293,7 @@ export default function Main() {
             resetPathfinding,
             specialNodes,
             options,
+            toggleIsSlow,
             updateClickChoice,
             getClickChoiceType,
             runPathfinding,

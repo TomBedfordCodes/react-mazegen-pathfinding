@@ -66,6 +66,7 @@ export default function Bfs() {
             // EMPTY QUEUE WITHOUT A PATH MEANS PATHFIND FAILED - WE EXIT HERE
             forceMazeUpdate()
             stopPathfinding()
+            specialNodes.current.currentNode = null
             return
         }
         const curr = queue.current.shift()
@@ -89,8 +90,13 @@ export default function Bfs() {
             updatePathfindingParentNode(adjPsg, curr)
         }
         // IF WE HAVEN'T FINISHED THE ALGO YET, TRIGGER A RE-RENDER TO CONTINUE (AND GET UPDATED STATE)
-        if (options.isSlowMo) {setTimeout(localUpdate, 10)}
-        else {setTimeout(localUpdate, 0)}
+        if (options.isSlowMo) {
+            // GOES FASTER THE MORE NODES THERE ARE IN QUEUE
+            let speed = (1 / (queue.current.length * (queue.current.length / 10))) * 450
+            speed = Math.max(2, speed)
+            speed = Math.min(50, speed)
+            setTimeout(localUpdate, speed)
+        } else {setTimeout(localUpdate, 0)}
         
         // DRAW EVERY FOUR UPDATES
         count.current++
