@@ -16,6 +16,7 @@ export default function Options() {
         stopPathfinding,
         resetPathfinding,
         toggleIsSlow,
+        options,
     } = React.useContext(MainContext)
 
     // console.log("options re-rendered")
@@ -25,7 +26,6 @@ export default function Options() {
             <h2>Options</h2>
             <ClickChoicePanel choices={[wallNode, pathNode]} />
             <ClickChoicePanel choices={[startNode, endNode]} />
-            {/* REPLACE WITH PROPER BUTTONS */}
             <button 
                 disabled={!specialNodes.current.startNode || 
                     !specialNodes.current.endNode || 
@@ -51,7 +51,7 @@ export default function Options() {
                 aria-label='Toggle slow-mo' 
                 onChange={toggleIsSlow}
                 id="slow-mo-checkbox"
-                defaultChecked
+                checked={options.isSlowMo}
             />
         </div>
     )

@@ -94,7 +94,8 @@ export default function Bfs() {
             // GOES FASTER THE MORE NODES THERE ARE IN QUEUE
             let speed = (1 / (queue.current.length * (queue.current.length / 10))) * 450
             speed = Math.max(2, speed)
-            speed = Math.min(50, speed)
+            speed = Math.min(25, speed)
+            console.log(speed)
             setTimeout(localUpdate, speed)
         } else {setTimeout(localUpdate, 0)}
         

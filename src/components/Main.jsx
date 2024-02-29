@@ -10,13 +10,7 @@ import {
 } from '../namedConstants.js'
 
 
-// NEXT - REDESIGN OPTIONS MENU - ADD SLOW-MO TOGGLE (ANY OTHER TOGGLES?)
-
-// COLOURS:
-//      PURPLE = (128, 0, 128)        - current
-//      VIOLET = (171, 63, 220)       - hunt and kill starting row/column
-//      FORESTGREEN = (0, 90, 0)
-//      FORESTSEARCHGREEN = (0, 140, 0)
+// NEXT - FILL OUT OPTIONS MENU (AND MOVE AS MANY OPTIONS FUNCTIONS DOWN TO OPTIONS COMPONENTS AS POSS)
 
 // OPTIONS:
 //      TERRAIN FOR CLICKING (track state so only one can be selected - can be null):
@@ -29,6 +23,13 @@ import {
 //          BFS, DFS (TURN LEFT), DIJKSTRA'S, A-STAR
 //      TOGGLES (create custom useToggle hook if there are multiple):
 //          SHOW GENERATION/PATHFINDING (SLOW-MO) OR JUST INSTA DO IT
+//      REDESIGN MENU SO IT LOOKS COOL
+
+// COLOURS:
+//      PURPLE = (128, 0, 128)        - current
+//      VIOLET = (171, 63, 220)       - hunt and kill starting row/column
+//      FORESTGREEN = (0, 90, 0)
+//      FORESTSEARCHGREEN = (0, 140, 0)
 
 // STRETCH GOALS:
 //      RESIZE MAZE TO FILL MOST OF THE SCREEN
