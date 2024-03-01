@@ -207,6 +207,30 @@ main {
 @keyframes path-animation {
   0% {
     transform: scale(0.7);
+    background-color: #dcff2c;
+  }
+  100% {
+    transform: scale(1.0);
+    background-color: #0000CD;
+  }
+}
+
+
+
+.animate-current {
+  animation-name: current-animation;
+  animation-duration: 0.3s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+@keyframes current-animation {
+  0% {
+    transform: scale(0.7);
   }
   100% {
     transform: scale(1.0);
@@ -231,11 +255,12 @@ main {
 
 .drawnPathNode {
   background-color: #0000CD;
-  /* transition: background-color 0.6s; */
+  border: solid rgba(255, 255, 255, 0.2) 1px;
 }
 
 .searchedNode {
-  background-color: #1E90FF
+  background-color: #1E90FF;
+  border: solid rgba(255, 255, 255, 0.137) 1px;
 }
 
 .frontierNode {
@@ -243,7 +268,7 @@ main {
 }
 
 .currentNode {
-  background-color: rgb(128, 0, 128);
+  background-color: rgba(128, 0, 128);
 }
 
 

@@ -38,10 +38,10 @@ export default function DrawPath({ isDrawingPath }) {
             forceMazeUpdate()
             return
         }
-        if (!getPathfindingParentCoords(currNodeCoords.current)) {
-            console.log(currNodeCoords.current)
-            console.log(specialNodes.current.startNode)
-        }
+        // if (!getPathfindingParentCoords(currNodeCoords.current)) {
+        //     console.log(currNodeCoords.current)
+        //     console.log(specialNodes.current.startNode)
+        // }
         currNodeCoords.current = getPathfindingParentCoords(currNodeCoords.current)
 
         if (options.isSlowMo) {setTimeout(localPathUpdate, 18)}

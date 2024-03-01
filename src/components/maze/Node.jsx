@@ -25,6 +25,7 @@ export default function Node({ node }) {
     const baseName = "maze--node"
     const animated = "animate-node"
     const pathAnimated = "animate-path"
+    const currentAnimated = "animate-current"
     let className = baseName
     switch (node.clickChoiceType) {
         case wallNode: 
@@ -40,7 +41,7 @@ export default function Node({ node }) {
     if (node.pathfinding.isDrawnPath) {
         className = `${options.isSlowMo && pathAnimated} ${drawnPathNode}`  // ${baseName} 
     } else if (specialNodes.current.currentNode && nodeIsCurrent(coords)) {
-        className = `${options.isSlowMo && pathAnimated} ${currentNode}`  // ${baseName} 
+        className = `${options.isSlowMo && currentAnimated} ${currentNode}`  // ${baseName}  
     } else if (node.pathfinding.isSearched) {
         className = `${searchedNode}`  // ${baseName} 
     } else if (node.pathfinding.isFrontier) {

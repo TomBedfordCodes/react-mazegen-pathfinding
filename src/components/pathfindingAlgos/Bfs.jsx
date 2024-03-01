@@ -92,16 +92,23 @@ export default function Bfs() {
         // IF WE HAVEN'T FINISHED THE ALGO YET, TRIGGER A RE-RENDER TO CONTINUE (AND GET UPDATED STATE)
         if (options.isSlowMo) {
             // GOES FASTER THE MORE NODES THERE ARE IN QUEUE
-            let speed = (1 / (queue.current.length * (queue.current.length / 10))) * 450
+            let speed = (1 / (queue.current.length * (queue.current.length / 5))) * 450   // 10
             speed = Math.max(2, speed)
             speed = Math.min(25, speed)
-            console.log(speed)
             setTimeout(localUpdate, speed)
         } else {setTimeout(localUpdate, 0)}
         
-        // DRAW EVERY FOUR UPDATES
+        // DRAW EVERY X UPDATES
+        let skipFrames = 1
+        if (queue.current.length > 50) {
+            skipFrames = 4
+        } else if (queue.current.length > 35) {
+            skipFrames = 3
+        } else if (queue.current.length > 20) { 
+            skipFrames = 2
+        } 
         count.current++
-        if (count.current % 1 === 0 && options.isSlowMo) {
+        if (count.current % skipFrames === 0 && options.isSlowMo) {
             forceMazeUpdate()
         }
 
