@@ -10,22 +10,21 @@ import {
 } from '../namedConstants.js'
 
 
-// NEXT - FILL OUT OPTIONS MENU (AND MOVE AS MANY OPTIONS FUNCTIONS DOWN TO OPTIONS COMPONENTS AS POSS)
-
-// MAZE RE-RENDERS WHEN ANY OPTION IS CHANGED...HOW TO AVOID THIS
+// NEXT - FILL OUT OPTIONS MENU 
+//      MOVE AS MANY OPTIONS FUNCTIONS DOWN TO OPTIONS COMPONENTS AS POSS
+//      MAZE RE-RENDERS WHEN ANY OPTION IS CHANGED - HOW TO AVOID THIS 
+//          (actually only seems to be on slow-mo toggle)
+//      REDESIGN OPTIONS MENU UI
 
 // OPTIONS:
 //      TERRAIN FOR CLICKING (track state so only one can be selected - can be null):
 //          WALL; PATH (normal speed); FOREST (x2 slower); MOUNTAIN (x5 slower)
-//      SPECIAL NODES FOR CLICKING (same state as terrain):
+//      SPECIAL NODES FOR CLICKING - SEPARATE FROM TERRAIN, USE DRAG AND DROP:
 //          START; END (get react-icons for start/end)
-//      WHICH MAZEGEN ALGO (some kind of dropdown selection component for these two):
+//      WHICH MAZEGEN ALGO (dropdown selection component for these two):
 //          KRUSKALS, PRIMMS, BACKTRACKING, HUNT AND KILL
 //      WHICH PATHFINDING ALGO:
 //          BFS, DFS (TURN LEFT), DIJKSTRA'S, A-STAR
-//      TOGGLES (create custom useToggle hook if there are multiple):
-//          SHOW GENERATION/PATHFINDING (SLOW-MO) OR JUST INSTA DO IT
-//      REDESIGN MENU SO IT LOOKS COOL
 
 // COLOURS:
 //      PURPLE = (128, 0, 128)        - current
@@ -34,7 +33,7 @@ import {
 //      FORESTSEARCHGREEN = (0, 140, 0)
 
 // FOR FOUND PATH - HAVE AN ARROW ICON AT THE START NODE AND ALSO HAVE AN ARROW ICON AT THE
-//      END NODE. MINE DRAWS FROM END TO START... FIRST DRAWNPATHNODE COULD BE A DIFF SHADE OF BLUE?
+//      END NODE. REVERSE THE DRAW PATH BY STORING VALUES IN AN ARRAY IN A REF THEN WORKING BACKWARDS.
 
 // STRETCH GOALS:
 //      RESIZE MAZE TO FILL MOST OF THE SCREEN DYNAMICALLY
@@ -51,8 +50,7 @@ import {
 //      TUTORIAL (MAYBE A MODAL) SHOWING HOW TO USE IT
 //      DRAG AND DROP START AND END NODES - DRAG AND DROP EITHER AFTER PATHFINDING TO READJUST PATH
 //          (WITHOUT REDRAWING IN SLOW-MO)
-//      DRAW PATH FROM START TO END RATHER THAN THE OTHER WAY AROUND (USE ARRAY TO STORE PATH BACK FROM
-//          END USING NORMAL ALGO, THEN RENDER GOING BACKWARDS FROM END OF ARRAY)
+
 
 
 
@@ -171,11 +169,21 @@ export default function Main() {
         // IF CLICK CHOICE IS START OR END NODE - EITHER UPDATE SPECIAL NODES REF WITH COORDS
         //      OR, IF ALREADY EXISTS, RETURN FROM FUNCTION (SAFETY CHECK)
         if (choiceType === startNode || choiceType === endNode) {
+            // if (choiceType === startNode && specialNodes.current.startNode) {
+            //     return
+            // } else if (choiceType === endNode && specialNodes.current.endNode) {
+            //     return
+            // }
+            
             if (choiceType === startNode && specialNodes.current.startNode) {
-                return
+                changeNodeClickChoice(specialNodes.current.startNode, pathNode)
+                specialNodes.current.startNode = null
             } else if (choiceType === endNode && specialNodes.current.endNode) {
-                return
-            } else if (choiceType === startNode && !specialNodes.current.startNode) {
+                changeNodeClickChoice(specialNodes.current.endNode, pathNode)
+                specialNodes.current.endNode = null
+            // } else if (choiceType === startNode && !specialNodes.current.startNode) {
+            } 
+            if (choiceType === startNode && !specialNodes.current.startNode) {
                 specialNodes.current.startNode = coords
                 // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
                 if (specialNodes.current.endNode &&
@@ -208,13 +216,24 @@ export default function Main() {
             specialNodes.current.endNode = null
         }
         // UPDATE NODE WITH THE CHOSEN NODE TYPE
+        changeNodeClickChoice(coords, choiceType)
+        // let node = mazeArr.current[coords[0]][coords[1]]
+        // node = {
+        //     ...node,
+        //     clickChoiceType: choiceType
+        // }
+        // mazeArr.current[coords[0]][coords[1]] = node
+        forceUpdate()
+    }
+
+
+    function changeNodeClickChoice(coords, choiceType) {
         let node = mazeArr.current[coords[0]][coords[1]]
         node = {
             ...node,
             clickChoiceType: choiceType
         }
         mazeArr.current[coords[0]][coords[1]] = node
-        forceUpdate()
     }
 
 
@@ -256,6 +275,7 @@ export default function Main() {
     }
 
     function runPathfinding() {
+        resetPathfinding()
         setPathfindingIsRunning(true)
         setMazegenIsRunning(false)
     }

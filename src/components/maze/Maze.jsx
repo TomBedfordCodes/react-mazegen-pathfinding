@@ -31,7 +31,9 @@ export default function Maze() {
     }
 
     function makeNodeSearched(coords) {
-        getNodeFromCoords(coords).pathfinding.isSearched = true
+        const node = getNodeFromCoords(coords)
+        node.pathfinding.isSearched = true
+        node.pathfinding.isFrontier = false
     }
 
     function isNodeSearched(coords) {

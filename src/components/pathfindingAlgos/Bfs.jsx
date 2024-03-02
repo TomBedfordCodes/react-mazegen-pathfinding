@@ -100,11 +100,11 @@ export default function Bfs() {
         
         // DRAW EVERY X UPDATES
         let skipFrames = 1
-        if (queue.current.length > 50) {
+        if (queue.current.length > 45) {
             skipFrames = 4
-        } else if (queue.current.length > 35) {
+        } else if (queue.current.length > 30) {
             skipFrames = 3
-        } else if (queue.current.length > 20) { 
+        } else if (queue.current.length > 15) { 
             skipFrames = 2
         } 
         count.current++

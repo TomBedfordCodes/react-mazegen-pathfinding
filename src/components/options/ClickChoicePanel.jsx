@@ -10,11 +10,11 @@ export default function ClickChoicePanel({ choices }) {
 
     const choiceBtnElements = choices.map((choice, i) => {
         let isDisabled = false
-        if (choice === startNode && specialNodes.current.startNode) {
-            isDisabled = true
-        } else if (choice === endNode && specialNodes.current.endNode) {
-            isDisabled = true
-        }
+        // if (choice === startNode && specialNodes.current.startNode) {
+        //     isDisabled = true
+        // } else if (choice === endNode && specialNodes.current.endNode) {
+        //     isDisabled = true
+        // }
 
         const isSelected = getClickChoiceType() === choice
         const secondClassName = isSelected && !isDisabled ? "btn-selected" : ""
