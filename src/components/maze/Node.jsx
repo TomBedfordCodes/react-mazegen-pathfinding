@@ -48,15 +48,7 @@ export default function Node({ node }) {
         className = `${options.isSlowMo && animated} ${frontierNode}`  // ${baseName} 
     }
 
-    // switch (node.clickChoiceType) {
-    //     case startNode:
-    //         className = `${animated} ${startNode}`  // ${baseName} 
-    //         break
-    //     case endNode:
-    //         className = `${animated} ${endNode}`  //${baseName} 
-    //         break
-    // }
-
+    
     if (specialNodes.current.startNode &&
         coords[0] === specialNodes.current.startNode[0] &&
         coords[1] === specialNodes.current.startNode[1]) {

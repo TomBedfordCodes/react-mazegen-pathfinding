@@ -174,22 +174,14 @@ export default function Main() {
 
     function updateMazeOnClick(coords) {
         const choiceType = getClickChoiceType()
-        // IF CLICK CHOICE IS START OR END NODE - EITHER UPDATE SPECIAL NODES REF WITH COORDS
-        //      OR, IF ALREADY EXISTS, RETURN FROM FUNCTION (SAFETY CHECK)
+        // IF CLICK CHOICE IS START OR END NODE, UPDATE SPECIAL NODES REF WITH COORDS
         if (choiceType === startNode || choiceType === endNode) {
-            // if (choiceType === startNode && specialNodes.current.startNode) {
-            //     return
-            // } else if (choiceType === endNode && specialNodes.current.endNode) {
-            //     return
-            // }
-            
             if (choiceType === startNode && specialNodes.current.startNode) {
                 changeNodeClickChoice(specialNodes.current.startNode, pathNode)
                 specialNodes.current.startNode = null
             } else if (choiceType === endNode && specialNodes.current.endNode) {
                 changeNodeClickChoice(specialNodes.current.endNode, pathNode)
                 specialNodes.current.endNode = null
-            // } else if (choiceType === startNode && !specialNodes.current.startNode) {
             } 
             if (choiceType === startNode && !specialNodes.current.startNode) {
                 specialNodes.current.startNode = coords
@@ -225,12 +217,6 @@ export default function Main() {
         }
         // UPDATE NODE WITH THE CHOSEN NODE TYPE
         changeNodeClickChoice(coords, choiceType)
-        // let node = mazeArr.current[coords[0]][coords[1]]
-        // node = {
-        //     ...node,
-        //     clickChoiceType: choiceType
-        // }
-        // mazeArr.current[coords[0]][coords[1]] = node
         forceUpdate()
     }
 
