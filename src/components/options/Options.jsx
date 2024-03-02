@@ -2,7 +2,7 @@ import React from 'react'
 import ClickChoicePanel from './ClickChoicePanel'
 import { MainContext } from '../Main.jsx'
 import {
-    wallNode, pathNode, startNode, endNode,
+    startNode, endNode, wallNode, pathNode, forestNode, mountainNode,
 } from '../../namedConstants.js'
 
 
@@ -24,8 +24,8 @@ export default function Options() {
     return (
         <div className='options--container'>
             <h2>Options</h2>
-            <ClickChoicePanel choices={[wallNode, pathNode]} />
-            <ClickChoicePanel choices={[startNode, endNode]} />
+            <hr />
+            <h3>Algorithms</h3>
             <button 
                 disabled={!specialNodes.current.startNode || 
                     !specialNodes.current.endNode || 
@@ -53,6 +53,11 @@ export default function Options() {
                 id="slow-mo-checkbox"
                 checked={options.isSlowMo}
             />
+            <hr />
+            <h3>Create your own</h3>
+            <ClickChoicePanel choices={[startNode, endNode]} />
+            <ClickChoicePanel choices={[wallNode, pathNode]} />
+            <ClickChoicePanel choices={[forestNode, mountainNode]} />
         </div>
     )
 }

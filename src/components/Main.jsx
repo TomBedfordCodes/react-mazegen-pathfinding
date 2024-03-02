@@ -3,23 +3,24 @@ import Maze from './maze/Maze.jsx'
 import Options from './options/Options.jsx'
 
 import {
-    wallNode, pathNode,
+    wallNode, pathNode, forestNode, mountainNode,
     startNode, endNode, currentNode,
     primms,
     bfs, dijkstras, 
 } from '../namedConstants.js'
 
 
-// NEXT - FILL OUT OPTIONS MENU 
+// NEXT - FILL OUT OPTIONS MENU
 //      MOVE AS MANY OPTIONS FUNCTIONS DOWN TO OPTIONS COMPONENTS AS POSS
 //      MAZE RE-RENDERS WHEN ANY OPTION IS CHANGED - HOW TO AVOID THIS 
 //          (actually only seems to be on slow-mo toggle)
 //      REDESIGN OPTIONS MENU UI
+//      DISABLE TERRAIN BUTTONS WHEN PATHFINDING IS DONE / UNDERWAY (ditto when mazegen underway)
 
 // OPTIONS:
 //      TERRAIN FOR CLICKING (track state so only one can be selected - can be null):
 //          WALL; PATH (normal speed); FOREST (x2 slower); MOUNTAIN (x5 slower)
-//      SPECIAL NODES FOR CLICKING - SEPARATE FROM TERRAIN, USE DRAG AND DROP:
+//      SPECIAL NODES FOR CLICKING -
 //          START; END (get react-icons for start/end)
 //      WHICH MAZEGEN ALGO (dropdown selection component for these two):
 //          KRUSKALS, PRIMMS, BACKTRACKING, HUNT AND KILL
@@ -49,7 +50,10 @@ import {
 //      ADD 'VIA' SPECIAL NODE
 //      TUTORIAL (MAYBE A MODAL) SHOWING HOW TO USE IT
 //      DRAG AND DROP START AND END NODES - DRAG AND DROP EITHER AFTER PATHFINDING TO READJUST PATH
-//          (WITHOUT REDRAWING IN SLOW-MO)
+//          (WITHOUT REDRAWING IN SLOW-MO). SEPARATE FROM TERRAIN CLICK STUFF.
+//          This will need to take priority over terrain drawing if hovering over start/endnode.
+
+
 
 
 
@@ -133,7 +137,11 @@ export default function Main() {
 
     const specialNodes = React.useRef({ ...templateSpecialNodes })
 
-    const clickChoiceNames = [wallNode, pathNode, startNode, endNode]
+
+    // TODO - REWORK CLICK CHOICES
+    const clickChoiceNames = [
+        startNode, endNode, wallNode, pathNode, forestNode, mountainNode
+    ]
 
     const [options, setOptions] = React.useState({
         clickChoices: clickChoiceNames.map(name => {

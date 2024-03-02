@@ -48,13 +48,23 @@ export default function Node({ node }) {
         className = `${options.isSlowMo && animated} ${frontierNode}`  // ${baseName} 
     }
 
-    switch (node.clickChoiceType) {
-        case startNode:
+    // switch (node.clickChoiceType) {
+    //     case startNode:
+    //         className = `${animated} ${startNode}`  // ${baseName} 
+    //         break
+    //     case endNode:
+    //         className = `${animated} ${endNode}`  //${baseName} 
+    //         break
+    // }
+
+    if (specialNodes.current.startNode &&
+        coords[0] === specialNodes.current.startNode[0] &&
+        coords[1] === specialNodes.current.startNode[1]) {
             className = `${animated} ${startNode}`  // ${baseName} 
-            break
-        case endNode:
+    } else if (specialNodes.current.endNode &&
+        coords[0] === specialNodes.current.endNode[0] &&
+        coords[1] === specialNodes.current.endNode[1]) {
             className = `${animated} ${endNode}`  //${baseName} 
-            break
     }
 
 

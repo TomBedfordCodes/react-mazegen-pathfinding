@@ -1,6 +1,8 @@
 // NODE CHOICE TYPES
 const wallNode = "wallNode"
 const pathNode = "pathNode"
+const forestNode = "forestNode"
+const mountainNode = "mountainNode"
 
 const startNode = "startNode"
 const endNode = "endNode"
@@ -15,7 +17,10 @@ const currentNode = "currentNode"
 const choiceNames = {
     [wallNode]: "Wall",
     [pathNode]: "Path",
+    [forestNode]: "Forest",
+    [mountainNode]: "Mountain",
 
+    // TODO - REMOVE START/ENDNODES FROM THIS DICT
     [startNode]: "Start",
     [endNode]: "End",
 }
@@ -32,8 +37,9 @@ const dijkstras = "dijkstras"
 
 
 export { 
-    wallNode, pathNode, 
-    startNode, endNode, currentNode, drawnPathNode, searchedNode, frontierNode,
+    wallNode, pathNode, forestNode, mountainNode,
+    startNode, endNode, currentNode, 
+    drawnPathNode, searchedNode, frontierNode,
     choiceNames,
     primms, 
     bfs, dijkstras,
