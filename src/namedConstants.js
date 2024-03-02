@@ -2,7 +2,11 @@
 const wallNode = "wallNode"
 const pathNode = "pathNode"
 const forestNode = "forestNode"
+const searchedForestNode = "searchedForestNode"
+const frontierForestNode = "frontierForestNode"
 const mountainNode = "mountainNode"
+const searchedMountainNode = "searchedMountainNode"
+const frontierMountainNode = "frontierMountainNode"
 
 const startNode = "startNode"
 const endNode = "endNode"
@@ -37,7 +41,8 @@ const dijkstras = "dijkstras"
 
 
 export { 
-    wallNode, pathNode, forestNode, mountainNode,
+    wallNode, pathNode, forestNode, mountainNode, 
+    searchedForestNode, frontierForestNode, searchedMountainNode, frontierMountainNode,
     startNode, endNode, currentNode, 
     drawnPathNode, searchedNode, frontierNode,
     choiceNames,
