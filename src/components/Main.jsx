@@ -65,8 +65,8 @@ const MainContext = React.createContext()
 
 const nodeWidth = 11
 const nodeHeight = 11
-const nodesInRow = 53
-const rowsInCol = 39
+let nodesInRow = 53
+let rowsInCol = 39
 
 
 function getTemplatePathfinding() {
@@ -174,6 +174,33 @@ export default function Main() {
 
     // ALLOWS US TO MANUALLY RENDER (SINCE WE'RE USING REFS TO CHOOSE WHEN TO RENDER)
     const [, forceUpdate] = React.useReducer(x => x + 1, 0)
+
+
+    // FOR RESIZING MAZE
+    React.useEffect(() => {
+        function resizeMaze() {
+            if (pathfindingIsRunning || mazegenIsRunning) {
+                return
+            }
+            const mazeContainer = document.getElementById("maze-container-rect")
+            mazeContainer.style.width = "100%"
+            mazeContainer.style.height = "100%"
+            const width = mazeContainer.getBoundingClientRect().width
+            const height = mazeContainer.getBoundingClientRect().height
+            nodesInRow = Math.floor(width/nodeWidth) // width
+            rowsInCol = Math.floor(height/nodeHeight) // height
+            mazeContainer.style.width = `${nodesInRow * (nodeWidth)}px`
+            mazeContainer.style.height = `${rowsInCol * (nodeHeight)}px`
+            resetMaze()
+        }
+        resizeMaze()
+        window.addEventListener("resize", resizeMaze)
+        return () => window.removeEventListener("resize", resizeMaze)
+    }, [])
+
+
+
+
 
 
     function updateMazeOnClick(coords) {

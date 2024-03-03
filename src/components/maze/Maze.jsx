@@ -230,7 +230,7 @@ export default function Maze() {
             makeNodeCurrent,
             nodeIsCurrent,
         }}>
-            <div className='maze--container'>
+            <div className='maze--container' id="maze-container-rect">
                 {mazeRows}
                 {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
             </div>

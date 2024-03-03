@@ -32,15 +32,15 @@ export default function Options() {
                 {/* MAZE GENERATION PLACEHOLDER INPUTS
                     WE NEED BOOLS TO CHECK IF MAZEGEN IS RUNNING AS WELL*/}
                 {/* <select disabled={pathfindingIsRunning}> */}
-                <select disabled>
-                    <option value="" disabled selected>Choose maze generation...</option>
+                <select disabled defaultValue={""}>
+                    <option value="" disabled>Choose maze generation...</option>
                     <option value={prims}>{algoNames.prims}</option>
                     <option value={kruskals}>{algoNames.kruskals}</option>
                 </select>
                 {!pathfindingIsRunning && <button 
                     disabled 
                     // disabled={pathfindingIsRunning} 
-                    onClick=""  // ADD RUNMAZEGEN FUNCTION
+                    // onClick=""  // ADD RUNMAZEGEN FUNCTION
                 >
                     Run maze generation
                 </button>}
@@ -55,8 +55,8 @@ export default function Options() {
 
 
                 {/* PATHFINDING */}
-                <select disabled={pathfindingIsRunning}>
-                    <option value="" disabled selected>Choose pathfinding...</option>
+                <select disabled={pathfindingIsRunning} defaultValue={""}>
+                    <option value="" disabled>Choose pathfinding...</option>
                     <option value={bfs}>{algoNames.bfs}</option>
                     <option value={dijkstras}>{algoNames.dijkstras}</option>
                 </select>
