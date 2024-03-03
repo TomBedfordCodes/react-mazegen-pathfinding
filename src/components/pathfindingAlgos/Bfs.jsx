@@ -43,12 +43,6 @@ export default function Bfs() {
     })
 
     React.useEffect(() => {
-        // if (!options.isSlowMo) {
-        //     return
-        // }
-    // useEffectOnUpdate(() => {
-        // This useEffect function gets a closure with the current state values; any changes in
-        //      state will not be reflected until the function is run again.
         if (!pathfindingIsRunning || options.pathfindingAlgo != bfs || 
             !specialNodes.current.startNode || !specialNodes.current.endNode) { 
             return
@@ -64,7 +58,7 @@ export default function Bfs() {
         } 
         else if (queue.current.length <= 0) {
             // EMPTY QUEUE WITHOUT A PATH MEANS PATHFIND FAILED - WE EXIT HERE
-            forceMazeUpdate()
+            // forceMazeUpdate()
             stopPathfinding()
             specialNodes.current.currentNode = null
             return

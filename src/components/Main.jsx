@@ -54,6 +54,12 @@ import {
 //      DRAG AND DROP START AND END NODES - DRAG AND DROP EITHER AFTER PATHFINDING TO READJUST PATH
 //          (WITHOUT REDRAWING IN SLOW-MO). SEPARATE FROM TERRAIN CLICK STUFF.
 //          This will need to take priority over terrain drawing if hovering over start/endnode.
+//          STUCK ON THE PROBLEM OF HOW TO AVOID RE-RENDERING UNTIL ALGO IS COMPLETE AFTER MOVING
+//              because the flag to get the algo running is in state, so triggers a re-render.
+//              Maybe within the onClick function; check if pathfindingComplete flag (ref) is true;
+//              if so, run func that while-loops whatever current algo is - I just need to
+//              update the mazeArr, then at the end forceUpdate. Unforch I need access to the helper
+//              functions within the maze component.
 
 
 
@@ -176,7 +182,8 @@ export default function Main() {
     const [, forceUpdate] = React.useReducer(x => x + 1, 0)
 
 
-    // FOR RESIZING MAZE
+
+    // RESIZE MAZE
     React.useEffect(() => {
         function resizeMaze() {
             if (pathfindingIsRunning || mazegenIsRunning) {
@@ -202,7 +209,7 @@ export default function Main() {
 
 
 
-
+    // WHEN USER CLICKS ON THE MAZE (CHANGES TERRAIN ETC.)
     function updateMazeOnClick(coords) {
         if (Date.now() - mouseLastEnteredNode.current < 30) {
             return
@@ -221,33 +228,33 @@ export default function Main() {
             if (choiceType === startNode && !specialNodes.current.startNode) {
                 specialNodes.current.startNode = coords
                 // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
-                if (specialNodes.current.endNode &&
-                    coords[0] === specialNodes.current.endNode[0] &&
-                    coords[1] === specialNodes.current.endNode[1]) {
-                    // _.isEqual(coords, specialNodes.current.endNode)) {
+                // if (specialNodes.current.endNode &&
+                //     coords[0] === specialNodes.current.endNode[0] &&
+                //     coords[1] === specialNodes.current.endNode[1]) {
+                if (_.isEqual(coords, specialNodes.current.endNode)) {
                     specialNodes.current.endNode = null
                 }
             } else if (choiceType === endNode && !specialNodes.current.endNode) {
                 specialNodes.current.endNode = coords
 
-                if (specialNodes.current.startNode &&
-                    coords[0] === specialNodes.current.startNode[0] &&
-                    coords[1] === specialNodes.current.startNode[1]) {
-                    // _.isEqual(coords, specialNodes.current.startNode)) {
+                // if (specialNodes.current.startNode &&
+                //     coords[0] === specialNodes.current.startNode[0] &&
+                //     coords[1] === specialNodes.current.startNode[1]) {
+                if (_.isEqual(coords, specialNodes.current.startNode)) {
                     specialNodes.current.startNode = null
                 }
             }
         }
         // IF CHANGING A START/END NODE TO SOMETHING ELSE, REMOVE COORDS FROM SPECIAL NODES REF
-        // else if (_.isEqual(coords, specialNodes.current.startNode)) {
-        else if (specialNodes.current.startNode &&
-            coords[0] === specialNodes.current.startNode[0] &&
-            coords[1] === specialNodes.current.startNode[1]) {
+        else if (_.isEqual(coords, specialNodes.current.startNode)) {
+        // else if (specialNodes.current.startNode &&
+        //     coords[0] === specialNodes.current.startNode[0] &&
+        //     coords[1] === specialNodes.current.startNode[1]) {
             specialNodes.current.startNode = null
-        // } else if (_.isEqual(coords, specialNodes.current.endNode)) {
-        } else if (specialNodes.current.endNode &&
-            coords[0] === specialNodes.current.endNode[0] &&
-            coords[1] === specialNodes.current.endNode[1]) {
+        } else if (_.isEqual(coords, specialNodes.current.endNode)) {
+        // } else if (specialNodes.current.endNode &&
+        //     coords[0] === specialNodes.current.endNode[0] &&
+        //     coords[1] === specialNodes.current.endNode[1]) {
             specialNodes.current.endNode = null
         }
         // UPDATE NODE WITH THE CHOSEN NODE TYPE
@@ -305,6 +312,7 @@ export default function Main() {
 
     function runPathfinding() {
         resetPathfinding()
+        // resetPathfinding(false)
         setPathfindingIsRunning(true)
         setMazegenIsRunning(false)
     }
@@ -328,6 +336,7 @@ export default function Main() {
         forceUpdate()
     }
 
+    // function resetPathfinding(update=true) {
     function resetPathfinding() {
         stopPathfinding()
         for (let row of mazeArr.current) {
@@ -336,6 +345,7 @@ export default function Main() {
             }
         }
         specialNodes.current.currentNode = null
+        // if (update) {forceUpdate()}
         forceUpdate()
     }
 

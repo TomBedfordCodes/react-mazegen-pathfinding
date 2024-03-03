@@ -10,7 +10,7 @@ import {
 
 export default function Node({ node }) {
 
-    const { updateMazeOnClick, options, specialNodes } = React.useContext(MainContext)
+    const { updateMazeOnClick, options, specialNodes, pathfindingIsRunning } = React.useContext(MainContext)
     const { nodeIsCurrent } = React.useContext(MazeContext)
 
     const { 
@@ -25,16 +25,14 @@ export default function Node({ node }) {
     }
 
     const baseName = "maze--node"
+    const fade = "maze--node-transition"
     const animated = "animate-node"
     const pathAnimated = "animate-path"
     const currentAnimated = "animate-current"
     let className = baseName
     switch (node.clickChoiceType) {
-        // case wallNode: 
-        //     className = `${animated} ${wallNode}`  // ${baseName} 
-        //     break
         case pathNode: 
-            className = `${baseName}`
+            className = `${baseName} ${fade}`
             break
         case forestNode: 
             className = `${forestNode}`  // ${baseName} 

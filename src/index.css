@@ -162,10 +162,11 @@ main {
 .maze--node {
   border: solid lightgrey 1px;
   /* background-color: #E8E6E3; */
-  transition: background-color 0.3s;
 }
 
-
+.maze--node-transition {
+  transition: background-color 0.3s;
+}
 
 
 
