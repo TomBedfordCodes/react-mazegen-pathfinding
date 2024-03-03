@@ -5,16 +5,16 @@ import Options from './options/Options.jsx'
 import {
     wallNode, pathNode, forestNode, mountainNode,
     startNode, endNode, currentNode,
-    primms,
+    prims, kruskals,
     bfs, dijkstras, 
 } from '../namedConstants.js'
 
 
-// NEXT - FILL OUT OPTIONS MENU
-//      MOVE AS MANY OPTIONS FUNCTIONS DOWN TO OPTIONS COMPONENTS AS POSS
+// NEXT - MOVE AS MANY OPTIONS FUNCTIONS DOWN TO OPTIONS COMPONENTS AS POSS
 //      MAZE RE-RENDERS WHEN ANY OPTION IS CHANGED - HOW TO AVOID THIS 
 //          (actually only seems to be on slow-mo toggle)
-//      REDESIGN OPTIONS MENU UI
+//      IMPLEMENT FIRST MAZE GEN ALGO AND GET ALL RELEVANT BTNS WORKING
+//      REDESIGN OPTIONS MENU UI (import components? put options in scrollable container?)
 //      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING
 //      HAVE REF BOOL FOR WHEN PATHFINDING IS DONE (AND NOT RESET); IF TERRAIN/START/END CHANGE,
 //          RE-RUN PATHFINDING (WITHOUT SLOW-MO ON). RESET BOOL IF MAZE RESET OR PATHFINDING RESET.
@@ -25,7 +25,7 @@ import {
 //      SPECIAL NODES FOR CLICKING -
 //          START; END (get react-icons for start/end)
 //      WHICH MAZEGEN ALGO (dropdown selection component for these two):
-//          KRUSKALS, PRIMMS, BACKTRACKING, HUNT AND KILL
+//          KRUSKAL'S, PRIM'S, BACKTRACKING, HUNT AND KILL
 //      WHICH PATHFINDING ALGO:
 //          BFS, DFS (TURN LEFT), DIJKSTRA'S, A-STAR
 
@@ -91,7 +91,7 @@ function getTemplateNode() {
         clickChoiceType: pathNode,
     
         // MAZEGEN
-        [primms]: {},
+        [prims]: {},
     
         // PATHFINDING
         pathfinding: getTemplatePathfinding()
@@ -169,12 +169,18 @@ export default function Main() {
     const [pathfindingIsRunning, setPathfindingIsRunning] = React.useState(false)
     const [mazegenIsRunning, setMazegenIsRunning] = React.useState(false)
 
+    const mouseLastEnteredNode = React.useRef(Date.now())
+
 
     // ALLOWS US TO MANUALLY RENDER (SINCE WE'RE USING REFS TO CHOOSE WHEN TO RENDER)
     const [, forceUpdate] = React.useReducer(x => x + 1, 0)
 
 
     function updateMazeOnClick(coords) {
+        if (Date.now() - mouseLastEnteredNode.current < 30) {
+            return
+        }
+        mouseLastEnteredNode.current = Date.now()
         const choiceType = getClickChoiceType()
         // IF CLICK CHOICE IS START OR END NODE, UPDATE SPECIAL NODES REF WITH COORDS
         if (choiceType === startNode || choiceType === endNode) {

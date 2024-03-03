@@ -311,12 +311,35 @@ main {
 
 /* OPTIONS */
 
+input[type="checkbox"]:hover {
+  cursor: pointer;
+}
+
+label:hover {
+  color: var(--accentHover);
+  cursor: pointer;
+}
+
+label:active {
+  color: var(--accentActive)
+}
+
+
+
 .options--container {
   height: 100%;
   margin: .7em 0.9em 0 0.9em;
-
+  max-width: 400px;
   /* border: solid white 1px; */
 }
+
+.options--algos-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1.5em 1.5em 1.5em;
+  gap: 0.4em;
+}
+
 
 .options--click-choice-panel--container {
   display: flex;
@@ -351,6 +374,13 @@ main {
   background-color: var(--accent);
 }
 
+
+
+.options--infobox-container {
+  padding: 1em 0;
+
+  /* border: solid white 1px; */
+}
 
 
 

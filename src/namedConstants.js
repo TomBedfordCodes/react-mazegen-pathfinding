@@ -31,13 +31,20 @@ const choiceNames = {
 
 
 // MAZEGEN ALGOS
-const primms = "primms"
+const prims = "prims"
+const kruskals = "kruskals"
 
 
 // PATHFINDING ALGOS
 const bfs = "bfs"
 const dijkstras = "dijkstras"
 
+const algoNames = {
+    [prims]: "Prim's",
+    [kruskals]: "Kruskal's",
+    [bfs]: "BFS",
+    [dijkstras]: "Dijkstra's"
+}
 
 
 export { 
@@ -46,6 +53,7 @@ export {
     startNode, endNode, currentNode, 
     drawnPathNode, searchedNode, frontierNode,
     choiceNames,
-    primms, 
+    prims, kruskals,
     bfs, dijkstras,
+    algoNames,
 }
