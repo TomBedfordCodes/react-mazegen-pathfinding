@@ -2,7 +2,10 @@ import React from 'react'
 import { MainContext } from '../Main'
 import Node from './Node'
 import Bfs from '../pathfindingAlgos/Bfs'
-import { bfs, wallNode } from '../../namedConstants'
+import { 
+    bfs, wallNode, pathNode,
+    startNode, endNode,
+ } from '../../namedConstants'
 
 
 const MazeContext = React.createContext()
@@ -17,10 +20,70 @@ export default function Maze() {
         nodesInRow,
         rowsInCol,
         pathfindingIsRunning,
-        getTemplatePathfinding,
+        getClickChoiceType,
+        forceUpdate,
     } = React.useContext(MainContext)
 
     const [, forceMazeUpdate] = React.useReducer(x => x + 1, 0)
+
+    const mouseLastEnteredNode = React.useRef(Date.now())
+
+
+
+    // WHEN USER CLICKS ON THE MAZE (CHANGES TERRAIN ETC.)
+    function updateMazeOnClick(coords) {
+        if (Date.now() - mouseLastEnteredNode.current < 30) {
+            return
+        }
+        mouseLastEnteredNode.current = Date.now()
+        const choiceType = getClickChoiceType()
+        // IF CLICK CHOICE IS START OR END NODE, UPDATE SPECIAL NODES REF WITH COORDS
+        if (choiceType === startNode || choiceType === endNode) {
+            if (choiceType === startNode && specialNodes.current.startNode) {
+                changeNodeClickChoice(specialNodes.current.startNode, pathNode)
+                specialNodes.current.startNode = null
+            } else if (choiceType === endNode && specialNodes.current.endNode) {
+                changeNodeClickChoice(specialNodes.current.endNode, pathNode)
+                specialNodes.current.endNode = null
+            } 
+            if (choiceType === startNode && !specialNodes.current.startNode) {
+                specialNodes.current.startNode = coords
+                // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
+                if (_.isEqual(coords, specialNodes.current.endNode)) {
+                    specialNodes.current.endNode = null
+                }
+            } else if (choiceType === endNode && !specialNodes.current.endNode) {
+                specialNodes.current.endNode = coords
+                if (_.isEqual(coords, specialNodes.current.startNode)) {
+                    specialNodes.current.startNode = null
+                }
+            }
+        }
+        // IF CHANGING A START/END NODE TO SOMETHING ELSE, REMOVE COORDS FROM SPECIAL NODES REF
+        else if (_.isEqual(coords, specialNodes.current.startNode)) {
+            specialNodes.current.startNode = null
+        } else if (_.isEqual(coords, specialNodes.current.endNode)) {
+            specialNodes.current.endNode = null
+        }
+        // UPDATE NODE WITH THE CHOSEN NODE TYPE
+        changeNodeClickChoice(coords, choiceType)
+        forceUpdate()
+    }
+
+
+    function changeNodeClickChoice(coords, choiceType) {
+        let node = mazeArr.current[coords[0]][coords[1]]
+        node = {
+            ...node,
+            clickChoiceType: choiceType
+        }
+        mazeArr.current[coords[0]][coords[1]] = node
+    }
+
+
+
+
+
 
 
 
@@ -215,6 +278,7 @@ export default function Maze() {
 
     return (
         <MazeContext.Provider value={{
+            updateMazeOnClick,
             forceMazeUpdate,
             updatePathfindingParentNode,
             getPathfindingParentCoords,

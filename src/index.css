@@ -194,6 +194,28 @@ main {
   }
 }
 
+.animate-node-alt {
+  animation-name: node-animation-alt;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+@keyframes node-animation-alt {
+  0% {
+    transform: scale(.3);
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}
+
+
+
 
 .animate-path {
   animation-name: path-animation;
@@ -338,7 +360,7 @@ label:active {
 .options--algos-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1.5em 1.5em 1.5em;
+  /* grid-template-rows: 1.5em 1.5em 1.5em; */
   gap: 0.4em;
 }
 

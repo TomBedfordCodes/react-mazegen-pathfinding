@@ -18,9 +18,30 @@ export default function Options() {
         resetPathfinding,
         toggleIsSlow,
         options,
+        setOptions,
     } = React.useContext(MainContext)
 
     // console.log("options re-rendered")
+
+
+    function changePathfindingAlgo(newAlgo) {
+        setOptions(prev => {
+            return {
+                ...prev,
+                pathfindingAlgo: newAlgo
+            }
+        })
+    }
+
+    function changeMazegenAlgo(newAlgo) {
+        setOptions(prev => {
+            return {
+                ...prev,
+                mazegenAlgo: newAlgo
+            }
+        })
+    }
+
     
     return (
         <div className='options--container'>
@@ -32,8 +53,12 @@ export default function Options() {
                 {/* MAZE GENERATION PLACEHOLDER INPUTS
                     WE NEED BOOLS TO CHECK IF MAZEGEN IS RUNNING AS WELL*/}
                 {/* <select disabled={pathfindingIsRunning}> */}
-                <select disabled defaultValue={""}>
-                    <option value="" disabled>Choose maze generation...</option>
+                <select 
+                    disabled 
+                    onChange={(e) => changeMazegenAlgo(e.target.value)}
+                    defaultValue={options.mazegenAlgo}
+                >
+                    {/* <option value="" disabled>Choose maze generation...</option> */}
                     <option value={prims}>{algoNames.prims}</option>
                     <option value={kruskals}>{algoNames.kruskals}</option>
                 </select>
@@ -55,8 +80,12 @@ export default function Options() {
 
 
                 {/* PATHFINDING */}
-                <select disabled={pathfindingIsRunning} defaultValue={""}>
-                    <option value="" disabled>Choose pathfinding...</option>
+                <select 
+                    disabled={pathfindingIsRunning} 
+                    onChange={(e) => changePathfindingAlgo(e.target.value)}
+                    defaultValue={options.pathfindingAlgo}
+                >
+                    {/* <option value="" disabled>Choose pathfinding...</option> */}
                     <option value={bfs}>{algoNames.bfs}</option>
                     <option value={dijkstras}>{algoNames.dijkstras}</option>
                 </select>

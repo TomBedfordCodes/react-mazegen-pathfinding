@@ -11,8 +11,6 @@ import {
 
 
 // NEXT - MOVE AS MANY OPTIONS FUNCTIONS DOWN TO OPTIONS COMPONENTS AS POSS
-//      MAZE RE-RENDERS WHEN ANY OPTION IS CHANGED - HOW TO AVOID THIS 
-//          (actually only seems to be on slow-mo toggle)
 //      IMPLEMENT FIRST MAZE GEN ALGO AND GET ALL RELEVANT BTNS WORKING
 //      REDESIGN OPTIONS MENU UI (import components? put options in scrollable container?)
 //      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING
@@ -54,13 +52,13 @@ import {
 //      DRAG AND DROP START AND END NODES - DRAG AND DROP EITHER AFTER PATHFINDING TO READJUST PATH
 //          (WITHOUT REDRAWING IN SLOW-MO). SEPARATE FROM TERRAIN CLICK STUFF.
 //          This will need to take priority over terrain drawing if hovering over start/endnode.
-//          STUCK ON THE PROBLEM OF HOW TO AVOID RE-RENDERING UNTIL ALGO IS COMPLETE AFTER MOVING
+//          STUCK ON THE PROBLEM OF HOW TO AVOID RE-RENDERING UNTIL ALGO IS COMPLETE AFTER CLICKING,
 //              because the flag to get the algo running is in state, so triggers a re-render.
 //              Maybe within the onClick function; check if pathfindingComplete flag (ref) is true;
 //              if so, run func that while-loops whatever current algo is - I just need to
-//              update the mazeArr, then at the end forceUpdate. Unforch I need access to the helper
-//              functions within the maze component.
-
+//              update the mazeArr, then at the end forceUpdate. I've moved clickUpdate func into 
+//              maze component so we will have access to the maze helper funcs.
+//      RESIZE NODE SIZE (MIN MAYBE 7PX, MAX 25PX) - WILL NEED TO RECALC MAZE SIZE ETC.
 
 
 
@@ -69,7 +67,7 @@ import {
 const MainContext = React.createContext()
 
 
-const nodeWidth = 11
+const nodeWidth = 11  // 10 to 30
 const nodeHeight = 11
 let nodesInRow = 53
 let rowsInCol = 39
@@ -138,7 +136,6 @@ const templateSpecialNodes = {
 
 // COMPONENT
 
-
 export default function Main() {
 
     const mazeArr = React.useRef(initialArr)
@@ -165,7 +162,7 @@ export default function Main() {
             }
         }),
         // FILL OUT OPTIONS
-        mazegenAlgo: "",
+        mazegenAlgo: prims,
         pathfindingAlgo: bfs,
         
         isSlowMo: true,
@@ -175,7 +172,7 @@ export default function Main() {
     const [pathfindingIsRunning, setPathfindingIsRunning] = React.useState(false)
     const [mazegenIsRunning, setMazegenIsRunning] = React.useState(false)
 
-    const mouseLastEnteredNode = React.useRef(Date.now())
+    // const mouseLastEnteredNode = React.useRef(Date.now())
 
 
     // ALLOWS US TO MANUALLY RENDER (SINCE WE'RE USING REFS TO CHOOSE WHEN TO RENDER)
@@ -183,94 +180,98 @@ export default function Main() {
 
 
 
-    // RESIZE MAZE
+    // RESIZE MAZE ON WINDOW RESIZE
+    const [resizeToggle, setResizeToggle] = React.useState(false)
+
+    React.useEffect(() => {
+        if (pathfindingIsRunning || mazegenIsRunning) {
+            return
+        }
+        const mazeContainer = document.getElementById("maze-container-rect")
+        mazeContainer.style.width = "100%"
+        mazeContainer.style.height = "100%"
+        const width = mazeContainer.getBoundingClientRect().width
+        const height = mazeContainer.getBoundingClientRect().height
+        nodesInRow = Math.floor(width/nodeWidth) // width
+        if (nodesInRow % 2 === 0) {
+            nodesInRow--
+        }
+        rowsInCol = Math.floor(height/nodeHeight) // height
+        if (rowsInCol % 2 === 0) {
+            rowsInCol--
+        }
+        mazeContainer.style.width = `${nodesInRow * (nodeWidth)}px`
+        mazeContainer.style.height = `${rowsInCol * (nodeHeight)}px`
+        resetMaze()
+    }, [resizeToggle])
+
     React.useEffect(() => {
         function resizeMaze() {
-            if (pathfindingIsRunning || mazegenIsRunning) {
-                return
-            }
-            const mazeContainer = document.getElementById("maze-container-rect")
-            mazeContainer.style.width = "100%"
-            mazeContainer.style.height = "100%"
-            const width = mazeContainer.getBoundingClientRect().width
-            const height = mazeContainer.getBoundingClientRect().height
-            nodesInRow = Math.floor(width/nodeWidth) // width
-            rowsInCol = Math.floor(height/nodeHeight) // height
-            mazeContainer.style.width = `${nodesInRow * (nodeWidth)}px`
-            mazeContainer.style.height = `${rowsInCol * (nodeHeight)}px`
-            resetMaze()
+            setResizeToggle(prev => !prev)
         }
-        resizeMaze()
         window.addEventListener("resize", resizeMaze)
         return () => window.removeEventListener("resize", resizeMaze)
     }, [])
 
 
 
+    // // WHEN USER CLICKS ON THE MAZE (CHANGES TERRAIN ETC.)
+    // function updateMazeOnClick(coords) {
+    //     if (Date.now() - mouseLastEnteredNode.current < 30) {
+    //         return
+    //     }
+    //     mouseLastEnteredNode.current = Date.now()
+    //     const choiceType = getClickChoiceType()
+    //     // IF CLICK CHOICE IS START OR END NODE, UPDATE SPECIAL NODES REF WITH COORDS
+    //     if (choiceType === startNode || choiceType === endNode) {
+    //         if (choiceType === startNode && specialNodes.current.startNode) {
+    //             changeNodeClickChoice(specialNodes.current.startNode, pathNode)
+    //             specialNodes.current.startNode = null
+    //         } else if (choiceType === endNode && specialNodes.current.endNode) {
+    //             changeNodeClickChoice(specialNodes.current.endNode, pathNode)
+    //             specialNodes.current.endNode = null
+    //         } 
+    //         if (choiceType === startNode && !specialNodes.current.startNode) {
+    //             specialNodes.current.startNode = coords
+    //             // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
+    //             if (_.isEqual(coords, specialNodes.current.endNode)) {
+    //                 specialNodes.current.endNode = null
+    //             }
+    //         } else if (choiceType === endNode && !specialNodes.current.endNode) {
+    //             specialNodes.current.endNode = coords
+    //             if (_.isEqual(coords, specialNodes.current.startNode)) {
+    //                 specialNodes.current.startNode = null
+    //             }
+    //         }
+    //     }
+    //     // IF CHANGING A START/END NODE TO SOMETHING ELSE, REMOVE COORDS FROM SPECIAL NODES REF
+    //     else if (_.isEqual(coords, specialNodes.current.startNode)) {
+    //         specialNodes.current.startNode = null
+    //     } else if (_.isEqual(coords, specialNodes.current.endNode)) {
+    //         specialNodes.current.endNode = null
+    //     }
+    //     // UPDATE NODE WITH THE CHOSEN NODE TYPE
+    //     changeNodeClickChoice(coords, choiceType)
+    //     forceUpdate()
+    // }
 
 
-    // WHEN USER CLICKS ON THE MAZE (CHANGES TERRAIN ETC.)
-    function updateMazeOnClick(coords) {
-        if (Date.now() - mouseLastEnteredNode.current < 30) {
-            return
-        }
-        mouseLastEnteredNode.current = Date.now()
-        const choiceType = getClickChoiceType()
-        // IF CLICK CHOICE IS START OR END NODE, UPDATE SPECIAL NODES REF WITH COORDS
-        if (choiceType === startNode || choiceType === endNode) {
-            if (choiceType === startNode && specialNodes.current.startNode) {
-                changeNodeClickChoice(specialNodes.current.startNode, pathNode)
-                specialNodes.current.startNode = null
-            } else if (choiceType === endNode && specialNodes.current.endNode) {
-                changeNodeClickChoice(specialNodes.current.endNode, pathNode)
-                specialNodes.current.endNode = null
-            } 
-            if (choiceType === startNode && !specialNodes.current.startNode) {
-                specialNodes.current.startNode = coords
-                // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
-                // if (specialNodes.current.endNode &&
-                //     coords[0] === specialNodes.current.endNode[0] &&
-                //     coords[1] === specialNodes.current.endNode[1]) {
-                if (_.isEqual(coords, specialNodes.current.endNode)) {
-                    specialNodes.current.endNode = null
-                }
-            } else if (choiceType === endNode && !specialNodes.current.endNode) {
-                specialNodes.current.endNode = coords
+    // function changeNodeClickChoice(coords, choiceType) {
+    //     let node = mazeArr.current[coords[0]][coords[1]]
+    //     node = {
+    //         ...node,
+    //         clickChoiceType: choiceType
+    //     }
+    //     mazeArr.current[coords[0]][coords[1]] = node
+    // }
 
-                // if (specialNodes.current.startNode &&
-                //     coords[0] === specialNodes.current.startNode[0] &&
-                //     coords[1] === specialNodes.current.startNode[1]) {
-                if (_.isEqual(coords, specialNodes.current.startNode)) {
-                    specialNodes.current.startNode = null
-                }
-            }
-        }
-        // IF CHANGING A START/END NODE TO SOMETHING ELSE, REMOVE COORDS FROM SPECIAL NODES REF
-        else if (_.isEqual(coords, specialNodes.current.startNode)) {
-        // else if (specialNodes.current.startNode &&
-        //     coords[0] === specialNodes.current.startNode[0] &&
-        //     coords[1] === specialNodes.current.startNode[1]) {
-            specialNodes.current.startNode = null
-        } else if (_.isEqual(coords, specialNodes.current.endNode)) {
-        // } else if (specialNodes.current.endNode &&
-        //     coords[0] === specialNodes.current.endNode[0] &&
-        //     coords[1] === specialNodes.current.endNode[1]) {
-            specialNodes.current.endNode = null
-        }
-        // UPDATE NODE WITH THE CHOSEN NODE TYPE
-        changeNodeClickChoice(coords, choiceType)
-        forceUpdate()
+    function getClickChoiceType() {
+        const newArr = options.clickChoices.filter(choice => {
+            return choice.isSelected
+        })
+        return newArr[0].clickChoiceType
     }
 
-
-    function changeNodeClickChoice(coords, choiceType) {
-        let node = mazeArr.current[coords[0]][coords[1]]
-        node = {
-            ...node,
-            clickChoiceType: choiceType
-        }
-        mazeArr.current[coords[0]][coords[1]] = node
-    }
 
 
     function updateClickChoice(clickChoiceType) {
@@ -294,13 +295,7 @@ export default function Main() {
         })
     }
 
-    function getClickChoiceType() {
-        const newArr = options.clickChoices.filter(choice => {
-            return choice.isSelected
-        })
-        return newArr[0].clickChoiceType
-    }
-
+    
     function toggleIsSlow() {
         setOptions(prev => {
             return {
@@ -355,13 +350,14 @@ export default function Main() {
 
     return (
         <MainContext.Provider value={{
-            updateMazeOnClick,
+            // updateMazeOnClick,
             forceUpdate,
             mazeArr,
             resetMaze,
             resetPathfinding,
             specialNodes,
             options,
+            setOptions,
             toggleIsSlow,
             updateClickChoice,
             getClickChoiceType,

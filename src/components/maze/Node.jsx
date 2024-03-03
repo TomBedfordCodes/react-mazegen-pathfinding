@@ -10,8 +10,8 @@ import {
 
 export default function Node({ node }) {
 
-    const { updateMazeOnClick, options, specialNodes, pathfindingIsRunning } = React.useContext(MainContext)
-    const { nodeIsCurrent } = React.useContext(MazeContext)
+    const { options, specialNodes, pathfindingIsRunning } = React.useContext(MainContext)  // updateMazeOnClick
+    const { nodeIsCurrent, updateMazeOnClick } = React.useContext(MazeContext)
 
     const { 
         nodeWidth, 
@@ -27,27 +27,28 @@ export default function Node({ node }) {
     const baseName = "maze--node"
     const fade = "maze--node-transition"
     const animated = "animate-node"
+    // const animateAlt = "animate-node-alt"
     const pathAnimated = "animate-path"
     const currentAnimated = "animate-current"
     let className = baseName
     switch (node.clickChoiceType) {
         case pathNode: 
-            className = `${baseName} ${fade}`
+            className = `${baseName} ${fade}`  // ${!pathfindingIsRunning && fade}`
             break
-        case forestNode: 
-            className = `${forestNode}`  // ${baseName} 
+        case forestNode: // unfortunately using animateAlt animates node on every reset
+            className = `${forestNode}`  // ${baseName} ${animateAlt} 
             break
         case mountainNode: 
-            className = `${mountainNode}` // ${baseName} 
+            className = `${mountainNode}` // ${baseName} ${animateAlt}
             break
         default:
             className = baseName
     }
 
     if (node.pathfinding.isDrawnPath) {
-        className = `${options.isSlowMo && pathAnimated} ${drawnPathNode}`  // ${baseName} 
+        className = `${options.isSlowMo && pathfindingIsRunning && pathAnimated} ${drawnPathNode}`  // ${baseName} 
     } else if (specialNodes.current.currentNode && nodeIsCurrent(coords)) {
-        className = `${options.isSlowMo && currentAnimated} ${currentNode}`  // ${baseName}  
+        className = `${options.isSlowMo && pathfindingIsRunning && currentAnimated} ${currentNode}`  // ${baseName}  
     } else if (node.pathfinding.isSearched) {
         className = `${searchedNode}`  // ${baseName} 
         if (node.clickChoiceType === forestNode) {
@@ -56,7 +57,7 @@ export default function Node({ node }) {
             className = `${searchedMountainNode}`
         }
     } else if (node.pathfinding.isFrontier) {
-        className = `${options.isSlowMo && animated} ${frontierNode}`  // ${baseName} 
+        className = `${options.isSlowMo && pathfindingIsRunning && animated} ${frontierNode}`  // ${baseName} 
         if (node.clickChoiceType === forestNode) {
             className = `${options.isSlowMo && animated} ${frontierForestNode}`
         } else if (node.clickChoiceType === mountainNode) {
