@@ -33,6 +33,9 @@ import {
 //      FORESTGREEN = (0, 90, 0)
 //      FORESTSEARCHGREEN = (0, 140, 0)
 
+//      MIGHT BE BETTER TO HAVE LITTLE ICONS FOR FOREST/MOUNTAIN TILES, WHICH WOULDN'T AFFECT THE 
+//          SEARCH COLOURS.
+
 // FOR FOUND PATH - HAVE AN ARROW ICON AT THE START NODE AND ALSO HAVE AN ARROW ICON AT THE
 //      END NODE. REVERSE THE DRAW PATH BY STORING VALUES IN AN ARRAY IN A REF THEN WORKING BACKWARDS.
 
@@ -59,7 +62,7 @@ import {
 //              update the mazeArr, then at the end forceUpdate. I've moved clickUpdate func into 
 //              maze component so we will have access to the maze helper funcs.
 //      RESIZE NODE SIZE (MIN MAYBE 7PX, MAX 25PX) - WILL NEED TO RECALC MAZE SIZE ETC.
-
+//      POSSIBLE TO PAUSE AND RESUME ALGOS? WOULD BE DIFFICULT
 
 
 
