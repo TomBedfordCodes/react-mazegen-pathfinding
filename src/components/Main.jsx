@@ -11,10 +11,11 @@ import {
 
 
 
-// NEXT - IMPLEMENT FIRST MAZE GEN ALGO AND GET ALL RELEVANT BTNS WORKING
+// NEXT - ADD START/ENDNODES TO FINISHED MAZE
 //      LOOK UP USETOGGLE CUSTOM HOOK; FIGURE OUT IF I CAN MAKE ONE (maybe for FPS?).
 //      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING (TERRAIN ETC.)
 //      REDESIGN OPTIONS MENU UI (import components; put options in scrollable container)
+//          It needs to be a lot more informative. How to do hover text?
 //      HAVE REF BOOL FOR WHEN PATHFINDING IS DONE (AND NOT RESET); IF TERRAIN/START/END CHANGE,
 //          RE-RUN PATHFINDING (WITHOUT SLOW-MO ON). RESET BOOL IF MAZE RESET OR PATHFINDING RESET.
 //          Just implement the basics of this with test console.logs()
@@ -45,7 +46,7 @@ import {
 //      RESIZE MAZE TO FILL MOST OF THE SCREEN DYNAMICALLY
 //      I'D LIKE MOST OF THE SCREEN TO BE THE GRID, WITH AN OPTIONS MENU TO SLIDE FROM THE RIGHT
 //          (WITH SOME BASIC OPTIONS ALWAYS VISIBLE?)
-//      TOGGLE WALLS UNEDITABLE (I have the checkbox ready)
+//      TOGGLE WALLS UNEDITABLE (I have the checkbox ready - it should be checked by default)
 //      MOBILE FIRST:
 //          - Use burger for menu in top-left which slides out.
 //          - Not enough width for navbar (causing footer issues).
@@ -56,6 +57,8 @@ import {
 //      DRAG AND DROP START AND END NODES - DRAG AND DROP EITHER AFTER PATHFINDING TO READJUST PATH
 //          (WITHOUT REDRAWING IN SLOW-MO). SEPARATE FROM TERRAIN CLICK STUFF.
 //          This will need to take priority over terrain drawing if hovering over start/endnode.
+//          Also cant drop start/endnode on a wall, and dragging it around shouldn't be destructive.
+//          Only update on mouserelease.
 //      REF FLAG FOR PATHFIND COMPLETE. CHECK THIS FLAG WHEN MAZE CLICKED. DONT ALLOW START/END TO BE
 //          REMOVED, BUT THEY CAN BE MOVED, OR TERRAIN ADDED/REMOVED. THEN RUN PATHFIND COMPONENT,
 //          WITH NO RERENDERS UNTIL ALGO+DRAWNPATH COMPLETE. CLICK IN MAZE WILL RERENDER, SO USE THIS
@@ -64,6 +67,7 @@ import {
 //      RESIZE NODE SIZE (MIN MAYBE 7PX, MAX 25PX) - WILL NEED TO RECALC MAZE SIZE ETC.
 //      POSSIBLE TO PAUSE AND RESUME ALGOS? WOULD BE IMPOSSIBLE WITH MY SETUP
 //      HAVE FLAG FOR WHEN PATHFINDING BEGINS SO RESET PATHFINDING BTN ISN'T CLICKABLE AT ALL TIMES
+//      GIVE FEEDBACK WHEN NO POSSIBLE PATH IS FOUND
 
 
 

@@ -72,7 +72,7 @@ export default function Maze() {
         forceUpdate()
     }
 
-
+    // UPDATES MAZE BASED ON CLICK
     function changeNodeClickChoice(coords, choiceType) {
         let node = mazeArr.current[coords[0]][coords[1]]
         node = {
@@ -91,6 +91,22 @@ export default function Maze() {
 
     // HELPER FUNCTIONS FOR THE MAZE ALGOS 
 
+
+    function getMazegenStartingPoint() {
+        // WILL RETURN A NODE ON AN ODD ROW AND COLUMN
+        let row = _.random(0, rowsInCol - 1)
+        let col = _.random(0, nodesInRow - 1)
+        while (row % 2 === 0 || col % 2 === 0) {
+            if (row % 2 === 0) {
+                row = _.random(0, rowsInCol - 1)
+            } else if (col % 2 === 0) {
+                col = _.random(0, nodesInRow - 1)
+            }
+        }
+        return [row, col]
+    }
+
+
     function getNodeFromCoords(coords) {
         return mazeArr.current[coords[0]][coords[1]]
     }
@@ -99,10 +115,6 @@ export default function Maze() {
         const node = getNodeFromCoords(coords)
         node.pathfinding.isSearched = true
         node.pathfinding.isFrontier = false
-    }
-
-    function isNodeSearched(coords) {
-        return getNodeFromCoords(coords).pathfinding.isSearched
     }
 
     function updatePathfindingParentNode(childCoords, parentCoords) {
@@ -141,9 +153,19 @@ export default function Maze() {
 
 
 
-    function getAdjCells(nodeCoords, ordered = false) {
-
+    function getAdjCells(coords, ordered=false) {
+        const row = coords[0]
+        const col = coords[1]
+        const cells = [[row + 2, col], [row, col + 2], [row - 2, col], [row, col - 2]]
+        const filteredCells = cells.filter(cell => {
+            return isWithinBounds(cell)
+        })
+        if (ordered) {
+            return filteredCells
+        }
+        return _.shuffle(filteredCells)
     }
+    // ORDERED STUFF FOR LEFT-TURN BACKTRACKING MISSING
     // def get_adj_cells(node: (int, int), ordered: bool = False) -> list:
     //     # returns adjacent cells (visited and unvisited) in random order (unless ordered=True, then in order SENW)
     //     row, col = node[0], node[1]
@@ -163,8 +185,8 @@ export default function Maze() {
             return isWithinBounds(psg) && isPassable(psg)
         })
         return filteredPassages
-        // THIS IS MISSING SOME STUFF FOR LEFT-TURN BACKTRACKING
     }
+    // LEFT-TURN STUFF FOR BACKTRACKING MISSING (DONT THINK I NEED UNORDERED)
     // def get_adj_passages(node: (int, int), ordered: bool = False, turn_left_parent: (int, int) = None) -> list:
     //     # returns adjacent passages in random order (unless ordered=True, then in order NESW)
     //     row, col = node[0], node[1]
@@ -228,6 +250,34 @@ export default function Maze() {
 
 
 
+    function createPassage(currCoords, adjCoords) {
+        if (adjCoords[0] > currCoords[0]) {
+            makeNodePath([currCoords[0] + 1, currCoords[1]])
+        } else if (adjCoords[0] < currCoords[0]) {
+            makeNodePath([currCoords[0] - 1, currCoords[1]])
+        } else if (adjCoords[1] > currCoords[1]) {
+            makeNodePath([currCoords[0], currCoords[1] + 1])
+        } else if (adjCoords[1] < currCoords[1]) {
+            makeNodePath([currCoords[0], currCoords[1] - 1])
+        }
+    }
+    // def create_passage(curr_node: (int, int), adj_node: (int, int)) -> None:
+    // if adj_node[0] > curr_node[0]:
+    //     maze[curr_node[0] + 1][curr_node[1]] = PASSAGE_CHAR
+    // elif adj_node[0] < curr_node[0]:
+    //     maze[curr_node[0] - 1][curr_node[1]] = PASSAGE_CHAR
+    // elif adj_node[1] > curr_node[1]:
+    //     maze[curr_node[0]][curr_node[1] + 1] = PASSAGE_CHAR
+    // elif adj_node[1] < curr_node[1]:
+    //     maze[curr_node[0]][curr_node[1] - 1] = PASSAGE_CHAR
+
+
+
+    function makeNodePath(coords) {
+        getNodeFromCoords(coords).clickChoiceType = pathNode
+    }
+
+
     function makeNodeWall(coords) {
         getNodeFromCoords(coords).clickChoiceType = wallNode
     }
@@ -247,11 +297,19 @@ export default function Maze() {
         specialNodes.current.currentNode = coords
     }
 
-    function nodeIsCurrent(coords) {
+    function isNodeCurrent(coords) {
         return (
             specialNodes.current.currentNode[0] === coords[0] &&
             specialNodes.current.currentNode[1] === coords[1]
         )
+    }
+
+    function isNodeSearched(coords) {
+        return getNodeFromCoords(coords).pathfinding.isSearched
+    }
+
+    function isNodeWall(coords) {
+        return getNodeFromCoords(coords).clickChoiceType === wallNode
     }
 
 
@@ -279,28 +337,35 @@ export default function Maze() {
         <MazeContext.Provider value={{
             updateMazeOnClick,
             forceMazeUpdate,
+            getMazegenStartingPoint,
             updatePathfindingParentNode,
             getPathfindingParentCoords,
             getAdjCellFromPassage,
+            getAdjCells,
             getAdjPassages,
-            isNodeSearched,
-            isWithinBounds,
-            isPassable,
+            createPassage,
+            makeNodePath,
             makeNodeSearched,
             makeNodeWall,
             makeNodeFrontier,
             makeNodeDrawnPath,
             makeNodeCurrent,
-            nodeIsCurrent,
+            isNodeSearched,
+            isWithinBounds,
+            isPassable,
+            isNodeCurrent,
+            isNodeWall,
         }}>
-            <div className='maze--container' id="maze-container-rect">
-                {mazeRows}
+            {/* <div className='maze--border-container'> */}
+                <div className='maze--container' id="maze-container-rect">
+                    {mazeRows}
 
-                {options.mazegenAlgo === prims && mazegenIsRunning && <Prims />}
+                    {options.mazegenAlgo === prims && mazegenIsRunning && <Prims />}
 
-                {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
+                    {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
 
-            </div>
+                </div>
+            {/* </div> */}
         </MazeContext.Provider>
     )
 }

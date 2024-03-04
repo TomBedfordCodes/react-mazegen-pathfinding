@@ -10,7 +10,7 @@ html, body {
 
 body {
   margin: 0;
-  background-color: #181A1B;
+  background-color: var(--mainBackgroundCol);
   color: var(--mainTextCol);
   font-family: 'Karla', sans-serif;
   /* font-family: 'Inter', sans-serif; */
@@ -32,6 +32,8 @@ body {
   --accent: rgb(82, 229, 82);
   --accentHover: rgb(106, 254, 106);
   --accentActive:  rgb(1, 184, 1);
+  --mainBackgroundCol: #181A1B;
+  /* --mainBackgroundCol: #232528; */
   --secondaryBackgroundCol: #202425;
 }
 
@@ -141,12 +143,15 @@ main {
   display: flex;
 }
 
-.maze--square {
-  height: 20px;
-  width: 20px;
-  background-color: white;
-  border: solid rgb(23, 23, 23) 1px;
-}
+/* .maze--border-container {
+  width: 100%;
+  height: 100%; 
+  padding: 0.1em 0.01em;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(211, 211, 211, 0.491);
+  border: solid 1px white; 
+} */
 
 .maze--container {
   /* max-width: 583px;  /* 11 x 53 * / */
@@ -155,8 +160,12 @@ main {
   width: 100%;
   height: 100%;
   align-self: center;
+  justify-self: center;
   background-color: #E8E6E3;
   user-select: none;
+
+  /* border: solid 1px white; */
+
 }
 
 .maze--node {
@@ -267,6 +276,7 @@ main {
 
 .wallNode {
   background-color: rgb(23, 23, 23);
+  border: solid rgba(255, 255, 255, 0.15) 1px;
 }
 
 .forestNode {
@@ -428,7 +438,7 @@ select {
 
 footer {
   height: 3em;
-  background-color: #202425;
+  background-color: var(--secondaryBackgroundCol);
   text-align: center;
   padding: 1em;
 }

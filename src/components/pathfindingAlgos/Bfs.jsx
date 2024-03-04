@@ -89,7 +89,7 @@ export default function Bfs() {
             // GOES FASTER THE MORE NODES THERE ARE IN QUEUE
             let timeBetweenRenders = (1 / (queue.current.length * (queue.current.length / 5))) * 450   // 10
             timeBetweenRenders = Math.max(2, timeBetweenRenders)
-            timeBetweenRenders = Math.min(25, timeBetweenRenders)
+            timeBetweenRenders = Math.min(15, timeBetweenRenders)
             setTimeout(localUpdate, timeBetweenRenders)
         } else {setTimeout(localUpdate, 0)}
         

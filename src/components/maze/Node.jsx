@@ -11,7 +11,7 @@ import {
 export default function Node({ node }) {
 
     const { options, specialNodes, pathfindingIsRunning } = React.useContext(MainContext)  // updateMazeOnClick
-    const { nodeIsCurrent, updateMazeOnClick } = React.useContext(MazeContext)
+    const { isNodeCurrent, updateMazeOnClick } = React.useContext(MazeContext)
 
     const { 
         nodeWidth, 
@@ -27,7 +27,7 @@ export default function Node({ node }) {
     const baseName = "maze--node"
     const fade = "maze--node-transition"
     const animated = "animate-node"
-    // const animateAlt = "animate-node-alt"
+    const animateAlt = "animate-node-alt"
     const pathAnimated = "animate-path"
     const currentAnimated = "animate-current"
     let className = baseName
@@ -36,10 +36,10 @@ export default function Node({ node }) {
             className = `${baseName} ${fade}`  // ${!pathfindingIsRunning && fade}`
             break
         case forestNode: // unfortunately using animateAlt animates node on every reset
-            className = `${forestNode}`  // ${baseName} ${animateAlt} 
+            className = `${animateAlt} ${forestNode}`  // ${baseName} ${animateAlt} 
             break
         case mountainNode: 
-            className = `${mountainNode}` // ${baseName} ${animateAlt}
+            className = `${animateAlt} ${mountainNode}` // ${baseName} ${animateAlt}
             break
         default:
             className = baseName
@@ -47,7 +47,7 @@ export default function Node({ node }) {
 
     if (node.pathfinding.isDrawnPath) {
         className = `${options.isSlowMo && pathfindingIsRunning && pathAnimated} ${drawnPathNode}`  // ${baseName} 
-    } else if (specialNodes.current.currentNode && nodeIsCurrent(coords)) {
+    } else if (specialNodes.current.currentNode && isNodeCurrent(coords)) {
         className = `${options.isSlowMo && pathfindingIsRunning && currentAnimated} ${currentNode}`  // ${baseName}  
     } else if (node.pathfinding.isSearched) {
         className = `${searchedNode}`  // ${baseName} 
