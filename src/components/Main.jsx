@@ -13,12 +13,13 @@ import {
 // NEXT - MOVE AS MANY OPTIONS FUNCTIONS DOWN TO OPTIONS COMPONENTS AS POSS
 //      IMPLEMENT FIRST MAZE GEN ALGO AND GET ALL RELEVANT BTNS WORKING
 //      REDESIGN OPTIONS MENU UI (import components? put options in scrollable container?)
-//      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING
+//      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING (TERRAIN ETC.)
 //      HAVE REF BOOL FOR WHEN PATHFINDING IS DONE (AND NOT RESET); IF TERRAIN/START/END CHANGE,
 //          RE-RUN PATHFINDING (WITHOUT SLOW-MO ON). RESET BOOL IF MAZE RESET OR PATHFINDING RESET.
+//          Just implement the basics of this with test console.logs()
 
 // OPTIONS:
-//      TERRAIN FOR CLICKING (track state so only one can be selected - can be null):
+//      TERRAIN FOR CLICKING (track state so only one can be selected:
 //          WALL; PATH (normal speed); FOREST (x2 slower); MOUNTAIN (x5 slower)
 //      SPECIAL NODES FOR CLICKING -
 //          START; END (get react-icons for start/end)
@@ -55,14 +56,9 @@ import {
 //      DRAG AND DROP START AND END NODES - DRAG AND DROP EITHER AFTER PATHFINDING TO READJUST PATH
 //          (WITHOUT REDRAWING IN SLOW-MO). SEPARATE FROM TERRAIN CLICK STUFF.
 //          This will need to take priority over terrain drawing if hovering over start/endnode.
-//          STUCK ON THE PROBLEM OF HOW TO AVOID RE-RENDERING UNTIL ALGO IS COMPLETE AFTER CLICKING,
-//              because the flag to get the algo running is in state, so triggers a re-render.
-//              Maybe within the onClick function; check if pathfindingComplete flag (ref) is true;
-//              if so, run func that while-loops whatever current algo is - I just need to
-//              update the mazeArr, then at the end forceUpdate. I've moved clickUpdate func into 
-//              maze component so we will have access to the maze helper funcs.
 //      RESIZE NODE SIZE (MIN MAYBE 7PX, MAX 25PX) - WILL NEED TO RECALC MAZE SIZE ETC.
-//      POSSIBLE TO PAUSE AND RESUME ALGOS? WOULD BE DIFFICULT
+//      POSSIBLE TO PAUSE AND RESUME ALGOS? WOULD BE DIFFICULT 
+//          In fact I think 'stop' should reset the mazegen/pathfinding as well.
 
 
 
@@ -175,7 +171,6 @@ export default function Main() {
     const [pathfindingIsRunning, setPathfindingIsRunning] = React.useState(false)
     const [mazegenIsRunning, setMazegenIsRunning] = React.useState(false)
 
-    // const mouseLastEnteredNode = React.useRef(Date.now())
 
 
     // ALLOWS US TO MANUALLY RENDER (SINCE WE'RE USING REFS TO CHOOSE WHEN TO RENDER)
@@ -217,56 +212,6 @@ export default function Main() {
     }, [])
 
 
-
-    // // WHEN USER CLICKS ON THE MAZE (CHANGES TERRAIN ETC.)
-    // function updateMazeOnClick(coords) {
-    //     if (Date.now() - mouseLastEnteredNode.current < 30) {
-    //         return
-    //     }
-    //     mouseLastEnteredNode.current = Date.now()
-    //     const choiceType = getClickChoiceType()
-    //     // IF CLICK CHOICE IS START OR END NODE, UPDATE SPECIAL NODES REF WITH COORDS
-    //     if (choiceType === startNode || choiceType === endNode) {
-    //         if (choiceType === startNode && specialNodes.current.startNode) {
-    //             changeNodeClickChoice(specialNodes.current.startNode, pathNode)
-    //             specialNodes.current.startNode = null
-    //         } else if (choiceType === endNode && specialNodes.current.endNode) {
-    //             changeNodeClickChoice(specialNodes.current.endNode, pathNode)
-    //             specialNodes.current.endNode = null
-    //         } 
-    //         if (choiceType === startNode && !specialNodes.current.startNode) {
-    //             specialNodes.current.startNode = coords
-    //             // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
-    //             if (_.isEqual(coords, specialNodes.current.endNode)) {
-    //                 specialNodes.current.endNode = null
-    //             }
-    //         } else if (choiceType === endNode && !specialNodes.current.endNode) {
-    //             specialNodes.current.endNode = coords
-    //             if (_.isEqual(coords, specialNodes.current.startNode)) {
-    //                 specialNodes.current.startNode = null
-    //             }
-    //         }
-    //     }
-    //     // IF CHANGING A START/END NODE TO SOMETHING ELSE, REMOVE COORDS FROM SPECIAL NODES REF
-    //     else if (_.isEqual(coords, specialNodes.current.startNode)) {
-    //         specialNodes.current.startNode = null
-    //     } else if (_.isEqual(coords, specialNodes.current.endNode)) {
-    //         specialNodes.current.endNode = null
-    //     }
-    //     // UPDATE NODE WITH THE CHOSEN NODE TYPE
-    //     changeNodeClickChoice(coords, choiceType)
-    //     forceUpdate()
-    // }
-
-
-    // function changeNodeClickChoice(coords, choiceType) {
-    //     let node = mazeArr.current[coords[0]][coords[1]]
-    //     node = {
-    //         ...node,
-    //         clickChoiceType: choiceType
-    //     }
-    //     mazeArr.current[coords[0]][coords[1]] = node
-    // }
 
     function getClickChoiceType() {
         const newArr = options.clickChoices.filter(choice => {
@@ -310,7 +255,6 @@ export default function Main() {
 
     function runPathfinding() {
         resetPathfinding()
-        // resetPathfinding(false)
         setPathfindingIsRunning(true)
         setMazegenIsRunning(false)
     }
@@ -334,8 +278,8 @@ export default function Main() {
         forceUpdate()
     }
 
-    // function resetPathfinding(update=true) {
-    function resetPathfinding() {
+    function resetPathfinding(update=true) {
+    // function resetPathfinding() {
         stopPathfinding()
         for (let row of mazeArr.current) {
             for (let node of row) {
@@ -343,8 +287,8 @@ export default function Main() {
             }
         }
         specialNodes.current.currentNode = null
-        // if (update) {forceUpdate()}
-        forceUpdate()
+        if (update) {forceUpdate()}
+        // forceUpdate()
     }
 
 
@@ -353,7 +297,6 @@ export default function Main() {
 
     return (
         <MainContext.Provider value={{
-            // updateMazeOnClick,
             forceUpdate,
             mazeArr,
             resetMaze,
