@@ -4,7 +4,7 @@ import Node from './Node'
 import Bfs from '../pathfindingAlgos/Bfs'
 import { 
     bfs, wallNode, pathNode,
-    startNode, endNode,
+    startNode, endNode, prims,
  } from '../../namedConstants'
 
 
@@ -19,6 +19,7 @@ export default function Maze() {
         specialNodes,
         nodesInRow,
         rowsInCol,
+        mazegenIsRunning,
         pathfindingIsRunning,
         getClickChoiceType,
         forceUpdate,
@@ -296,7 +297,11 @@ export default function Maze() {
         }}>
             <div className='maze--container' id="maze-container-rect">
                 {mazeRows}
+
+                {options.mazegenAlgo === prims && mazegenIsRunning && <Prims />}
+
                 {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
+
             </div>
         </MazeContext.Provider>
     )

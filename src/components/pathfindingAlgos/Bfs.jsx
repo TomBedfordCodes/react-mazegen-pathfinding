@@ -109,8 +109,6 @@ export default function Bfs() {
     }, [depsLocalUpdate, pathfindingIsRunning])
 
 
-
-
     // // WHILE LOOP VERSION
     // React.useEffect(() => {
     //     if (options.isSlowMo) {

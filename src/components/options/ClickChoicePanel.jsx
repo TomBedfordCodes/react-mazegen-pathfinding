@@ -2,11 +2,13 @@ import React from 'react'
 import { MainContext } from '../Main'
 import { choiceNames } from '../../namedConstants'
 import { startNode, endNode } from '../../namedConstants'
+import { OptionsContext } from './Options'
 
 
 export default function ClickChoicePanel({ choices }) {
 
-    const { updateClickChoice, getClickChoiceType, specialNodes } = React.useContext(MainContext)
+    const { getClickChoiceType } = React.useContext(MainContext)
+    const { updateClickChoice, } = React.useContext(OptionsContext)
 
     const choiceBtnElements = choices.map((choice, i) => {
         let isDisabled = false

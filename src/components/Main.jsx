@@ -10,10 +10,11 @@ import {
 } from '../namedConstants.js'
 
 
-// NEXT - MOVE AS MANY OPTIONS FUNCTIONS DOWN TO OPTIONS COMPONENTS AS POSS
-//      IMPLEMENT FIRST MAZE GEN ALGO AND GET ALL RELEVANT BTNS WORKING
-//      REDESIGN OPTIONS MENU UI (import components? put options in scrollable container?)
+
+// NEXT - IMPLEMENT FIRST MAZE GEN ALGO AND GET ALL RELEVANT BTNS WORKING
+//      LOOK UP USETOGGLE CUSTOM HOOK; FIGURE OUT IF I CAN MAKE ONE
 //      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING (TERRAIN ETC.)
+//      REDESIGN OPTIONS MENU UI (import components; put options in scrollable container)
 //      HAVE REF BOOL FOR WHEN PATHFINDING IS DONE (AND NOT RESET); IF TERRAIN/START/END CHANGE,
 //          RE-RUN PATHFINDING (WITHOUT SLOW-MO ON). RESET BOOL IF MAZE RESET OR PATHFINDING RESET.
 //          Just implement the basics of this with test console.logs()
@@ -50,23 +51,26 @@ import {
 //          - Not enough width for navbar (causing footer issues).
 //          - Have settings at the top, then maze below. 'Generate maze' button 
 // 	            just above maze. Possible to snap view to maze?
-//      SEPARATE OUT MAZE AND OPTIONS STATES INTO THEIR RESPECTIVE COMPONENTS AND EXPOSE TO MAIN
 //      ADD 'VIA' SPECIAL NODE
 //      TUTORIAL (MAYBE A MODAL) SHOWING HOW TO USE IT
 //      DRAG AND DROP START AND END NODES - DRAG AND DROP EITHER AFTER PATHFINDING TO READJUST PATH
 //          (WITHOUT REDRAWING IN SLOW-MO). SEPARATE FROM TERRAIN CLICK STUFF.
 //          This will need to take priority over terrain drawing if hovering over start/endnode.
+//      REF FLAG FOR PATHFIND COMPLETE. CHECK THIS FLAG WHEN MAZE CLICKED. DONT ALLOW START/END TO BE
+//          REMOVED, BUT THEY CAN BE MOVED, OR TERRAIN ADDED/REMOVED. THEN RUN PATHFIND COMPONENT,
+//          WITH NO RERENDERS UNTIL ALGO+DRAWNPATH COMPLETE. CLICK IN MAZE WILL RERENDER, SO USE THIS
+//          TO CHECK THE FLAG AND RENDER THE ALGO COMPONENT AGAIN, AND CHECKING THE REF FLAG IN A 
+//          USEEFFECT, RUN THE ALGO AGAIN (MAY NEED A SEPARATE USEEFFECT WHICH JUST CHECKS THE FLAG)
 //      RESIZE NODE SIZE (MIN MAYBE 7PX, MAX 25PX) - WILL NEED TO RECALC MAZE SIZE ETC.
 //      POSSIBLE TO PAUSE AND RESUME ALGOS? WOULD BE DIFFICULT 
 //          In fact I think 'stop' should reset the mazegen/pathfinding as well.
 
 
 
-
 const MainContext = React.createContext()
 
-
-const nodeWidth = 11  // 10 to 30
+// INITIAL NODE/MAZE SIZE
+const nodeWidth = 11  // Can range from 10 to 30
 const nodeHeight = 11
 let nodesInRow = 53
 let rowsInCol = 39
@@ -86,29 +90,20 @@ function getTemplateNode() {
         nodeWidth,
         nodeHeight,
         coords: [],  // TWO VALUES IN ARRAY FOR POSITION IN 2D MAZE ARRAY
-        id: ``,
-    
-        // UPDATE THIS OBJECT WITH ALL ALGO VARS (LIKE F, G ETC.)
-    
+        id: ``,    
         // CHOSEN NODE TYPE
         clickChoiceType: pathNode,
-    
         // MAZEGEN
         [prims]: {},
-    
         // PATHFINDING
         pathfinding: getTemplatePathfinding()
     }
 }
 
-
-
-
 // ON STARTUP CREATE MAZE - 2D ARRAY OF NODE OBJECTS
-
 const initialArr = getResetMaze()
 
-function getResetMaze() {
+function getResetMaze(forMazegen=false) {
     const starterArr = []
     for (let i = 0; i < rowsInCol; i++) {
         const row = []
@@ -116,6 +111,7 @@ function getResetMaze() {
             const node = getTemplateNode()
             node.coords = [i, j]
             node.id = `${i}, ${j}`
+            node.clickChoiceType = forMazegen ? wallNode : pathNode
             row.push(node)
         }
         starterArr.push(row)
@@ -124,8 +120,9 @@ function getResetMaze() {
 }
 
 
+// TEMPLATE FOR SPECIAL NODES
 const templateSpecialNodes = {
-        [startNode]: null,  // UPDATED WITH THE COORDS 
+        [startNode]: null,  // UPDATES WITH THE COORDS 
         [endNode]: null,
         [currentNode]: null
     }
@@ -134,13 +131,11 @@ const templateSpecialNodes = {
 
 
 // COMPONENT
-
 export default function Main() {
 
+    // STATE AND REFS
     const mazeArr = React.useRef(initialArr)
-
     const specialNodes = React.useRef({ ...templateSpecialNodes })
-
 
     // TODO - REWORK CLICK CHOICES
     const clickChoiceNames = [
@@ -167,15 +162,12 @@ export default function Main() {
         isSlowMo: true,
     })
 
-
     const [pathfindingIsRunning, setPathfindingIsRunning] = React.useState(false)
     const [mazegenIsRunning, setMazegenIsRunning] = React.useState(false)
 
 
-
     // ALLOWS US TO MANUALLY RENDER (SINCE WE'RE USING REFS TO CHOOSE WHEN TO RENDER)
     const [, forceUpdate] = React.useReducer(x => x + 1, 0)
-
 
 
     // RESIZE MAZE ON WINDOW RESIZE
@@ -212,7 +204,7 @@ export default function Main() {
     }, [])
 
 
-
+    // GET CURRENT CHOSEN NODE TYPE FOR CLICKING IN THE MAZE
     function getClickChoiceType() {
         const newArr = options.clickChoices.filter(choice => {
             return choice.isSelected
@@ -221,36 +213,13 @@ export default function Main() {
     }
 
 
-
-    function updateClickChoice(clickChoiceType) {
-        setOptions(prev => {
-            return {
-                ...prev,
-                clickChoices: prev.clickChoices.map(choice => {
-                    if (clickChoiceType === choice.clickChoiceType) {
-                        return {
-                            ...choice,
-                            isSelected: true
-                        }
-                    } else {
-                        return {
-                            ...choice,
-                            isSelected: false
-                        }
-                    }
-                })
-            }
-        })
-    }
-
-    
-    function toggleIsSlow() {
-        setOptions(prev => {
-            return {
-                ...prev,
-                isSlowMo: !prev.isSlowMo
-            }
-        })
+    // FUNCTIONS TO CONTROL ALGOS AND MAZE
+    function resetMaze(forMazegen=false) {
+        stopMazegen()
+        stopPathfinding()
+        mazeArr.current = getResetMaze(forMazegen)
+        specialNodes.current = { ...templateSpecialNodes }
+        forceUpdate()
     }
 
     function runPathfinding() {
@@ -260,6 +229,7 @@ export default function Main() {
     }
 
     function runMazegen() {
+        resetMaze(true)
         setMazegenIsRunning(true)
         setPathfindingIsRunning(false)
     }
@@ -272,14 +242,7 @@ export default function Main() {
         setMazegenIsRunning(false)
     }
 
-    function resetMaze() {
-        mazeArr.current = getResetMaze()
-        specialNodes.current = { ...templateSpecialNodes }
-        forceUpdate()
-    }
-
-    function resetPathfinding(update=true) {
-    // function resetPathfinding() {
+    function resetPathfinding(rerender=true) {
         stopPathfinding()
         for (let row of mazeArr.current) {
             for (let node of row) {
@@ -287,8 +250,7 @@ export default function Main() {
             }
         }
         specialNodes.current.currentNode = null
-        if (update) {forceUpdate()}
-        // forceUpdate()
+        if (rerender) {forceUpdate()}
     }
 
 
@@ -304,8 +266,6 @@ export default function Main() {
             specialNodes,
             options,
             setOptions,
-            toggleIsSlow,
-            updateClickChoice,
             getClickChoiceType,
             runPathfinding,
             runMazegen,

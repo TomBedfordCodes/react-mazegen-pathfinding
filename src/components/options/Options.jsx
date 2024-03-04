@@ -7,6 +7,10 @@ import {
 } from '../../namedConstants.js'
 
 
+
+const OptionsContext = React.createContext()
+
+
 export default function Options() {
 
     const { 
@@ -16,13 +20,44 @@ export default function Options() {
         runPathfinding,
         stopPathfinding,
         resetPathfinding,
-        toggleIsSlow,
         options,
         setOptions,
     } = React.useContext(MainContext)
 
+
     // console.log("options re-rendered")
 
+    
+    function updateClickChoice(clickChoiceType) {
+        setOptions(prev => {
+            return {
+                ...prev,
+                clickChoices: prev.clickChoices.map(choice => {
+                    if (clickChoiceType === choice.clickChoiceType) {
+                        return {
+                            ...choice,
+                            isSelected: true
+                        }
+                    } else {
+                        return {
+                            ...choice,
+                            isSelected: false
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+    
+    function toggleIsSlow() {
+        setOptions(prev => {
+            return {
+                ...prev,
+                isSlowMo: !prev.isSlowMo
+            }
+        })
+    }
 
     function changePathfindingAlgo(newAlgo) {
         setOptions(prev => {
@@ -44,6 +79,9 @@ export default function Options() {
 
     
     return (
+        <OptionsContext.Provider value={{
+            updateClickChoice,
+        }}>
         <div className='options--container'>
             <h2>Options</h2>
             <hr />
@@ -141,6 +179,9 @@ export default function Options() {
             <div className='options--infobox-container'>Info box</div>
 
         </div>
+        </OptionsContext.Provider>
     )
 }
+
+export { OptionsContext }
 
