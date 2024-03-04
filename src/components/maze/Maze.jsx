@@ -2,6 +2,7 @@ import React from 'react'
 import { MainContext } from '../Main'
 import Node from './Node'
 import Bfs from '../pathfindingAlgos/Bfs'
+import Prims from '../mazegenAlgos/Prims'
 import { 
     bfs, wallNode, pathNode,
     startNode, endNode, prims,
@@ -161,10 +162,7 @@ export default function Maze() {
         const filteredPassages = passages.filter(psg => {
             return isWithinBounds(psg) && isPassable(psg)
         })
-        // Getting the same result every time probably looks neater
         return filteredPassages
-        // const shuffledPassages = _.shuffle(filteredPassages)
-        // return shuffledPassages
         // THIS IS MISSING SOME STUFF FOR LEFT-TURN BACKTRACKING
     }
     // def get_adj_passages(node: (int, int), ordered: bool = False, turn_left_parent: (int, int) = None) -> list:
@@ -200,12 +198,12 @@ export default function Maze() {
 
 
     function isWithinBounds(coords) {
-        //  if (_.isEqual(coords, specialNodes.current.startNode) ||
-        // _.isEqual(coords, specialNodes.current.endNode)) {
-        if ((coords[0] === specialNodes.current.startNode[0] &&
-            coords[1] === specialNodes.current.startNode[1]) ||
-            (coords[0] === specialNodes.current.endNode[0] &&
-                coords[1] === specialNodes.current.endNode[1])) {
+        if (_.isEqual(coords, specialNodes.current.startNode) ||
+            _.isEqual(coords, specialNodes.current.endNode)) {
+        // if ((coords[0] === specialNodes.current.startNode[0] &&
+        //     coords[1] === specialNodes.current.startNode[1]) ||
+        //     (coords[0] === specialNodes.current.endNode[0] &&
+        //         coords[1] === specialNodes.current.endNode[1])) {
             return true
         }
         return ((0 <= coords[0] && coords[0] < rowsInCol) &&

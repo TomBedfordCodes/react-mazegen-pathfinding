@@ -348,6 +348,10 @@ label:active {
   color: var(--accentActive)
 }
 
+select {
+  text-align: center;
+}
+
 
 
 .options--container {
@@ -369,15 +373,15 @@ label:active {
   display: flex;
   gap: 0.75em;
   margin: 0.5em 0;
-  width: 50%;
+  /* width: 50%; */
   /* border: solid white 1px; */
 }
 
 
-.options--click-choice-btn {
+.options--btn {
   padding: 0.5em 1em;
   font-family: 'Karla', sans-serif;
-  font-size: 1rem;
+  font-size: .8rem;
   font-weight: 500;
   background-color: var(--mainTextCol);
   border: none;
@@ -386,11 +390,11 @@ label:active {
   flex: 1 1 0px;
 }
 
-.options--click-choice-btn:hover:enabled {
+.options--btn:hover:enabled {
   background-color: var(--accent);
 }
 
-.options--click-choice-btn:active:enabled {
+.options--btn:active:enabled {
   background-color: var(--accentActive);
 }
 

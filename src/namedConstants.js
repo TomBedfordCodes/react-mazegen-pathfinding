@@ -25,8 +25,8 @@ const choiceNames = {
     [mountainNode]: "Mountain",
 
     // TODO - REMOVE START/ENDNODES FROM THIS DICT
-    [startNode]: "Start",
-    [endNode]: "End",
+    [startNode]: "Start Node",
+    [endNode]: "End Node",
 }
 
 

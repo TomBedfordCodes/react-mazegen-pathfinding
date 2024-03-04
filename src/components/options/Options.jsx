@@ -16,8 +16,11 @@ export default function Options() {
     const { 
         specialNodes,
         resetMaze, 
+        mazegenIsRunning,
         pathfindingIsRunning,
+        runMazegen,
         runPathfinding,
+        stopMazegen,
         stopPathfinding,
         resetPathfinding,
         options,
@@ -88,11 +91,10 @@ export default function Options() {
             <h3>Algorithms</h3>
 
             <div className='options--algos-container'>
-                {/* MAZE GENERATION PLACEHOLDER INPUTS
-                    WE NEED BOOLS TO CHECK IF MAZEGEN IS RUNNING AS WELL*/}
-                {/* <select disabled={pathfindingIsRunning}> */}
+                {/* MAZE GENERATION */}
+                {/* <label htmlFor='pathfinding-select'>Maze generation */}
                 <select 
-                    disabled 
+                    disabled={mazegenIsRunning} 
                     onChange={(e) => changeMazegenAlgo(e.target.value)}
                     defaultValue={options.mazegenAlgo}
                 >
@@ -100,50 +102,73 @@ export default function Options() {
                     <option value={prims}>{algoNames.prims}</option>
                     <option value={kruskals}>{algoNames.kruskals}</option>
                 </select>
-                {!pathfindingIsRunning && <button 
-                    disabled 
-                    // disabled={pathfindingIsRunning} 
-                    // onClick=""  // ADD RUNMAZEGEN FUNCTION
+                {/* </label> */}
+
+                {!mazegenIsRunning && <button 
+                    disabled={
+                        mazegenIsRunning ||
+                        pathfindingIsRunning
+                    } 
+                    onClick={runMazegen}
+                    className='options--btn'
                 >
                     Run maze generation
                 </button>}
-                {pathfindingIsRunning && 
+
+                {mazegenIsRunning && 
                     <button 
-                        disabled 
-                        // disabled={!pathfindingIsRunning} 
-                        onClick={stopPathfinding}
+                        onClick={stopMazegen}
+                        className='options--btn'
                     >
                     Stop maze generation
                 </button>}
 
 
                 {/* PATHFINDING */}
+                {/* <label htmlFor='pathfinding-select'>Pathfinding */}
                 <select 
+                    // id='pathfinding-select'
                     disabled={pathfindingIsRunning} 
                     onChange={(e) => changePathfindingAlgo(e.target.value)}
                     defaultValue={options.pathfindingAlgo}
                 >
-                    {/* <option value="" disabled>Choose pathfinding...</option> */}
                     <option value={bfs}>{algoNames.bfs}</option>
                     <option value={dijkstras}>{algoNames.dijkstras}</option>
                 </select>
+                {/* </label> */}
+
                 {!pathfindingIsRunning && <button 
-                    disabled={!specialNodes.current.startNode || 
+                    disabled={
+                        !specialNodes.current.startNode || 
                         !specialNodes.current.endNode || 
+                        mazegenIsRunning ||
                         pathfindingIsRunning
                     } 
                     onClick={runPathfinding}
+                    className='options--btn'
                 >
                     Run pathfinding
                 </button>}
-                {pathfindingIsRunning && <button disabled={!pathfindingIsRunning} onClick={stopPathfinding}>
+
+                {pathfindingIsRunning && <button 
+                    onClick={stopPathfinding}
+                    className='options--btn'
+                >
                     Stop pathfinding
                 </button>}
 
-                <button onClick={resetMaze}>
-                    Reset Maze
+                <button 
+                    onClick={() => resetMaze(false)}
+                    className='options--btn'
+                >
+                    Clear grid
                 </button>
-                <button onClick={resetPathfinding}>
+
+                <button 
+                    disabled={mazegenIsRunning}
+                    onClick={resetPathfinding}
+                    className='options--btn'
+                >
                     Reset Pathfinding
                 </button>
             </div>

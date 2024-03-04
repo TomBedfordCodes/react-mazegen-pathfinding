@@ -19,7 +19,7 @@ export default function ClickChoicePanel({ choices }) {
         return (
             <button
                 key={i}
-                className={`options--click-choice-btn ${secondClassName}`}
+                className={`options--btn ${secondClassName}`}
                 onClick={() => updateClickChoice(choice)}
                 disabled={isDisabled}
                 >
