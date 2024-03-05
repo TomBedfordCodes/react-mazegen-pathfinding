@@ -24,7 +24,7 @@ const choiceNames = {
     [forestNode]: "Forest",
     [mountainNode]: "Mountain",
 
-    // TODO - REMOVE START/ENDNODES FROM THIS DICT
+    // TODO - REMOVE START/ENDNODES FROM THIS DICT?
     [startNode]: "Start Node",
     [endNode]: "End Node",
 }
@@ -32,6 +32,7 @@ const choiceNames = {
 
 // MAZEGEN ALGOS
 const prims = "prims"
+const backtracking = "backtracking"
 const kruskals = "kruskals"
 
 
@@ -39,9 +40,15 @@ const kruskals = "kruskals"
 const bfs = "bfs"
 const dijkstras = "dijkstras"
 
-const algoNames = {
+
+// DISPLAY NAMES
+const mazegenAlgoNames = {
     [prims]: "Prim's",
+    [backtracking]: "Backtracking",
     [kruskals]: "Kruskal's",
+}
+
+const pathfindingAlgoNames = {
     [bfs]: "BFS",
     [dijkstras]: "Dijkstra's"
 }
@@ -53,7 +60,7 @@ export {
     startNode, endNode, currentNode, 
     drawnPathNode, searchedNode, frontierNode,
     choiceNames,
-    prims, kruskals,
+    prims, backtracking, kruskals,
     bfs, dijkstras,
-    algoNames,
+    mazegenAlgoNames, pathfindingAlgoNames
 }

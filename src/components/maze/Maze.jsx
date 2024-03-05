@@ -5,8 +5,9 @@ import Bfs from '../pathfindingAlgos/Bfs'
 import Prims from '../mazegenAlgos/Prims'
 import {
     bfs, wallNode, pathNode,
-    startNode, endNode, prims,
+    startNode, endNode, prims, backtracking,
 } from '../../namedConstants'
+import Backtracking from '../mazegenAlgos/Backtracking'
 
 
 const MazeContext = React.createContext()
@@ -114,10 +115,12 @@ export default function Maze() {
     }
 
     function getRandomMazeStartNode() {
-        let start = [0, _.random(1, Math.floor(nodesInRow / 3))]
+        // let start = [0, _.random(1, Math.floor(nodesInRow / 3))]
+        let start = [0, _.random(0, nodesInRow - 1)]
         if (start[1] % 2 === 0) { start = [start[0], start[1] + 1] }
         while (isNodeWall([1, start[1]])) {
-            start = [0, _.random(1, Math.floor(nodesInRow / 3))]
+            // start = [0, _.random(1, Math.floor(nodesInRow / 3))]
+            start = [0, _.random(0, nodesInRow - 1)]
             if (start[1] % 2 === 0) { start = [start[0], start[1] + 1] }
         }
         return start
@@ -131,10 +134,12 @@ export default function Maze() {
     }
 
     function getRandomMazeEndNode() {
-        let end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
+        // let end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
+        let end = [rowsInCol - 1, _.random(0, nodesInRow - 1)]
         if (end[1] % 2 === 0) { end = [end[0], end[1] - 1] }
         while (isNodeWall([end[0] - 1, end[1]])) {
-            end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
+            // end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
+            end = [rowsInCol - 1, _.random(0, nodesInRow - 1)]
             if (end[1] % 2 === 0) { end = [end[0], end[1] - 1] }
         }
         return end
@@ -294,12 +299,16 @@ export default function Maze() {
     function createPassage(currCoords, adjCoords) {
         if (adjCoords[0] > currCoords[0]) {
             makeNodePath([currCoords[0] + 1, currCoords[1]])
+            // return [currCoords[0] + 1, currCoords[1]]
         } else if (adjCoords[0] < currCoords[0]) {
             makeNodePath([currCoords[0] - 1, currCoords[1]])
+            // return [currCoords[0] - 1, currCoords[1]]
         } else if (adjCoords[1] > currCoords[1]) {
             makeNodePath([currCoords[0], currCoords[1] + 1])
+            // return [currCoords[0], currCoords[1] + 1]
         } else if (adjCoords[1] < currCoords[1]) {
             makeNodePath([currCoords[0], currCoords[1] - 1])
+            // return [currCoords[0], currCoords[1] - 1]
         }
     }
     // def create_passage(curr_node: (int, int), adj_node: (int, int)) -> None:
@@ -403,6 +412,7 @@ export default function Maze() {
                 {mazeRows}
 
                 {options.mazegenAlgo === prims && mazegenIsRunning && <Prims />}
+                {options.mazegenAlgo === backtracking && mazegenIsRunning && <Backtracking />}
 
                 {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
 

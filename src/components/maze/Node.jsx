@@ -10,7 +10,7 @@ import {
 
 export default function Node({ node }) {
 
-    const { options, specialNodes, pathfindingIsRunning } = React.useContext(MainContext)  // updateMazeOnClick
+    const { options, specialNodes, mazegenIsRunning, pathfindingIsRunning } = React.useContext(MainContext)  // updateMazeOnClick
     const { isNodeCurrent, updateMazeOnClick } = React.useContext(MazeContext)
 
     const { 
@@ -33,7 +33,7 @@ export default function Node({ node }) {
     let className = baseName
     switch (node.clickChoiceType) {
         case pathNode: 
-            className = `${baseName} ${fade}`  // ${!pathfindingIsRunning && fade}`
+            className = `${baseName} ${!mazegenIsRunning && fade}`  // ${!pathfindingIsRunning && fade}`
             break
         case forestNode: // unfortunately using animateAlt animates node on every reset
             className = `${animateAlt} ${forestNode}`  // ${baseName} ${animateAlt} 
@@ -48,7 +48,12 @@ export default function Node({ node }) {
     if (node.pathfinding.isDrawnPath) {
         className = `${options.isSlowMo && pathfindingIsRunning && pathAnimated} ${drawnPathNode}`  // ${baseName} 
     } else if (specialNodes.current.currentNode && isNodeCurrent(coords)) {
-        className = `${options.isSlowMo && pathfindingIsRunning && currentAnimated} ${currentNode}`  // ${baseName}  
+        className = `${
+            options.isSlowMo && 
+            pathfindingIsRunning && 
+            !mazegenIsRunning &&
+            currentAnimated
+        } ${currentNode}`  // ${baseName}  
     } else if (node.pathfinding.isSearched) {
         className = `${searchedNode}`  // ${baseName} 
         if (node.clickChoiceType === forestNode) {
@@ -77,7 +82,9 @@ export default function Node({ node }) {
     }
 
     if (node.clickChoiceType === wallNode) {
-        className = `${animated} ${wallNode}`  // ${baseName} 
+        className = `${
+            mazegenIsRunning && options.isSlowMo && 
+            animated} ${wallNode}`  // ${baseName} 
     }
 
     

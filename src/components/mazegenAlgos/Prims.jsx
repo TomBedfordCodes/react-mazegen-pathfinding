@@ -2,6 +2,7 @@ import React from 'react'
 import { MainContext } from '../Main'
 import { prims } from '../../namedConstants'
 import { MazeContext } from '../maze/Maze'
+import useMazegen from '../../hooks/useMazegen'
 
 
 export default function Prims() {
@@ -21,25 +22,19 @@ export default function Prims() {
         forceMazeUpdate,
         getAdjCells,
         createPassage,
-        makeNodeCurrent,
+        // makeNodeCurrent,
         makeNodePath,
         isPassable,
         isNodeWall,
     } = React.useContext(MazeContext)
 
 
-    const stack = React.useRef([])
-
-    const [depsLocalUpdate, localUpdate] = React.useReducer(x => x + 1, 0)
-
-    const count = React.useRef(0)
-
-    // CHOOSE A RANDOM STARTING POINT (KEEP IN STATE TO CHECK IF THIS IS THE FIRST PASS)
     const [
-        mazegenStartingPoint, 
-        setMazegenStartingPoint
-    ] = React.useState(getMazegenAlgoStartingPoint)
+        stack, depsLocalUpdate, localUpdate, mazegenStartingPoint
+    ] = useMazegen(getMazegenAlgoStartingPoint)
 
+
+    // console.log("Prim's rerendered")
     
 
     React.useEffect(() => {
@@ -51,7 +46,7 @@ export default function Prims() {
 
         // ALGORITHM (USING COORDS TO REPRESENT NODES)
         
-        // EDGE CASES OF FIRST / LAST PASS
+        // EDGE CASES: FIRST / LAST PASS
         if (stack.current.length <= 0 && isNodeWall(mazegenStartingPoint)) {
             makeNodePath(mazegenStartingPoint)
             const nextCells = getAdjCells(mazegenStartingPoint).filter(cell => {
@@ -62,7 +57,7 @@ export default function Prims() {
                 forceMazeUpdate()
             }
         } else if (stack.current.length <= 0) {
-            // EMPTY STACK MEANS MAZEGEN COMPLETE - SET START AND END NODES, REMOVE CURRENT, AND END
+            // EMPTY STACK MEANS MAZEGEN COMPLETE - REMOVE CURRENT, ADD START AND END NODES
             specialNodes.current.currentNode = null
             addMazegenStartAndEndNodes()
             stopMazegen()
@@ -100,7 +95,7 @@ export default function Prims() {
         }
         // ADD CURR TO TREE; POP IT FROM STACK; ADD ITS UNVISITED NEIGHBOURS TO STACK
         makeNodePath(currNode)
-        makeNodeCurrent(currNode)
+        // makeNodeCurrent(currNode)
         stack.current.pop(currNodeIndex)
         const nextCells = getAdjCells(currNode).filter(cell => {
             return !isPassable(cell)
@@ -113,22 +108,18 @@ export default function Prims() {
         if (options.isSlowMo) {forceMazeUpdate()}
 
         // TRIGGER A RERENDER TO CONTINUE AFTER A CERTAIN AMOUNT OF TIME
-        const timeBetweenRenders = 10
+        const timeBetweenRenders = 25
         if (options.isSlowMo) {
             setTimeout(localUpdate, timeBetweenRenders)
         } else {setTimeout(localUpdate, 0)}
         
     }, [depsLocalUpdate, mazegenIsRunning])
 
-
-
     return (
         <>
         </>
     )
 }
-
-
 
 // PYTHON
 // # likelihood of going back to a random node to create a new branch (higher = less likely)
@@ -153,3 +144,4 @@ export default function Prims() {
         //         # Updates the maze for rendering / text drawing
         //         signal_maze_updated(curr_node)
         //     create_entry_exit()
+

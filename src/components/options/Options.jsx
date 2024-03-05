@@ -3,7 +3,7 @@ import ClickChoicePanel from './ClickChoicePanel'
 import { MainContext } from '../Main.jsx'
 import {
     startNode, endNode, wallNode, pathNode, forestNode, mountainNode, 
-    bfs, algoNames, dijkstras, prims, kruskals,
+    mazegenAlgoNames, pathfindingAlgoNames, // prims, kruskals, bfs, dijkstras, 
 } from '../../namedConstants.js'
 
 
@@ -80,6 +80,17 @@ export default function Options() {
         })
     }
 
+    const mazegenOptionElements = Object.keys(mazegenAlgoNames).map((algo, i) => {
+        return (
+            <option key={algo} value={algo}>{mazegenAlgoNames[algo]}</option>
+        )
+    })
+
+    const pathfindingOptionElements = Object.keys(pathfindingAlgoNames).map(algo => {
+            return (
+                <option key={algo} value={algo}>{pathfindingAlgoNames[algo]}</option>
+            )
+    })
     
     return (
         <OptionsContext.Provider value={{
@@ -94,13 +105,14 @@ export default function Options() {
                 {/* MAZE GENERATION */}
                 {/* <label htmlFor='pathfinding-select'>Maze generation */}
                 <select 
+                    id='mazegen-select'
                     disabled={mazegenIsRunning} 
                     onChange={(e) => changeMazegenAlgo(e.target.value)}
                     defaultValue={options.mazegenAlgo}
                 >
-                    {/* <option value="" disabled>Choose maze generation...</option> */}
-                    <option value={prims}>{algoNames.prims}</option>
-                    <option value={kruskals}>{algoNames.kruskals}</option>
+                    {mazegenOptionElements}
+                    {/* <option value={prims}>{algoNames.prims}</option>
+                    <option value={kruskals}>{algoNames.kruskals}</option> */}
                 </select>
                 {/* </label> */}
 
@@ -127,13 +139,14 @@ export default function Options() {
                 {/* PATHFINDING */}
                 {/* <label htmlFor='pathfinding-select'>Pathfinding */}
                 <select 
-                    // id='pathfinding-select'
+                    id='pathfinding-select'
                     disabled={pathfindingIsRunning} 
                     onChange={(e) => changePathfindingAlgo(e.target.value)}
                     defaultValue={options.pathfindingAlgo}
                 >
-                    <option value={bfs}>{algoNames.bfs}</option>
-                    <option value={dijkstras}>{algoNames.dijkstras}</option>
+                    {pathfindingOptionElements}
+                    {/* <option value={bfs}>{algoNames.bfs}</option>
+                    <option value={dijkstras}>{algoNames.dijkstras}</option> */}
                 </select>
                 {/* </label> */}
 

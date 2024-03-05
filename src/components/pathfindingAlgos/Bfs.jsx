@@ -1,9 +1,9 @@
 import React from 'react'
 import { MainContext } from '../Main'
 import { bfs } from '../../namedConstants'
-import useEffectOnUpdate from '../../hooks/useEffectOnUpdate'
 import { MazeContext } from '../maze/Maze'
 import DrawPath from './DrawPath'
+import usePathfinding from '../../hooks/usePathfinding'
 
 
 export default function Bfs() {
@@ -25,22 +25,14 @@ export default function Bfs() {
         updatePathfindingParentNode,
     } = React.useContext(MazeContext)
 
-
-    const queue = React.useRef([])
-    const [depsLocalUpdate, localUpdate] = React.useReducer(x => x + 1, 0)
-    const [isDrawingPath, setIsDrawingPath] = React.useState(false)
-
-    const count = React.useRef(0)
-
     
+    const [
+        queue, depsLocalUpdate, localUpdate, isDrawingPath, setIsDrawingPath, count
+    ] = usePathfinding()
+    
+
     // console.log("Rerendered BFS")
 
-
-    React.useEffect(() => {
-        if (!pathfindingIsRunning && isDrawingPath) {
-            setIsDrawingPath(false)
-        }
-    })
 
     React.useEffect(() => {
         if (!pathfindingIsRunning || options.pathfindingAlgo != bfs || 
@@ -89,7 +81,7 @@ export default function Bfs() {
             // GOES FASTER THE MORE NODES THERE ARE IN QUEUE
             let timeBetweenRenders = (1 / (queue.current.length * (queue.current.length / 5))) * 450   // 10
             timeBetweenRenders = Math.max(2, timeBetweenRenders)
-            timeBetweenRenders = Math.min(15, timeBetweenRenders)
+            timeBetweenRenders = Math.min(10, timeBetweenRenders)
             setTimeout(localUpdate, timeBetweenRenders)
         } else {setTimeout(localUpdate, 0)}
         
@@ -159,7 +151,8 @@ export default function Bfs() {
 
     return (
         <>
-            {isDrawingPath && <DrawPath isDrawingPath={isDrawingPath} />}
+            {isDrawingPath && 
+                <DrawPath isDrawingPath={isDrawingPath} setIsDrawingPath={setIsDrawingPath} />}
         </>
     )
 }

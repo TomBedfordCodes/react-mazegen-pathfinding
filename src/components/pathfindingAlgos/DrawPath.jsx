@@ -3,7 +3,8 @@ import { MazeContext } from '../maze/Maze'
 import { MainContext } from '../Main'
 
 
-export default function DrawPath({ isDrawingPath }) {
+export default function DrawPath({ isDrawingPath, setIsDrawingPath }) {
+    // COMPONENT INSTANTIATED WHEN WE'RE READY TO DRAW A PATH
 
     const { 
         options,
@@ -21,33 +22,49 @@ export default function DrawPath({ isDrawingPath }) {
     const [depsLocalPathUpdate, localPathUpdate] = React.useReducer(x => x + 1, 0)
 
 
-    // THIS COMPONENT IS CREATED WHEN WE'RE READY TO DRAW A PATH, AND WILL KEEP RE-RENDERING
-    //      IN A LOOP UNTIL STARTNODE IS FOUND, THEN WILL STOP ALL PATHFINDING
+    // console.log("drawpath rerendered")
+
+
+    // WILL KEEP RE-RENDERING IN A LOOP UNTIL STARTNODE IS FOUND, THEN STOP ALL PATHFINDING
     React.useEffect(() => {
-        if (!isDrawingPath) {
+        if (!isDrawingPath ) { // || !options.isSlowMo
             return
         }
         makeNodeDrawnPath(currNodeCoords.current)
         if (options.isSlowMo) {
             forceMazeUpdate()
         }
-        // if (_.isEqual(currNodeCoords.current, specialNodes.current.startNode)) {
-        if (currNodeCoords.current[0] === specialNodes.current.startNode[0] &&
-            currNodeCoords.current[1] === specialNodes.current.startNode[1]) {
+        if (_.isEqual(currNodeCoords.current, specialNodes.current.startNode)) {
             stopPathfinding()
+            setIsDrawingPath(false)
             forceMazeUpdate()
             return
         }
-        // if (!getPathfindingParentCoords(currNodeCoords.current)) {
-        //     console.log(currNodeCoords.current)
-        //     console.log(specialNodes.current.startNode)
-        // }
         currNodeCoords.current = getPathfindingParentCoords(currNodeCoords.current)
-
-        if (options.isSlowMo) {setTimeout(localPathUpdate, 18)}
-        else {setTimeout(localPathUpdate(0))}
+        
+        if (options.isSlowMo) {
+            setTimeout(localPathUpdate, 18)
+        } else {setTimeout(localPathUpdate, 0)}
 
     }, [isDrawingPath, depsLocalPathUpdate])
+
+
+    // WHILE LOOP VERSION (IF SLOW-MO NOT SELECTED) - ERROR IS NO LONGER BEING THROWN...
+    // React.useEffect(() => {
+    //     if (!isDrawingPath || options.isSlowMo) {
+    //         return
+    //     }
+    //     while (true) {
+    //         makeNodeDrawnPath(currNodeCoords.current)
+    //         if (_.isEqual(currNodeCoords.current, specialNodes.current.startNode)) {
+    //             stopPathfinding()
+    //             setIsDrawingPath(false)
+    //             forceMazeUpdate()
+    //             return
+    //         }
+    //         currNodeCoords.current = getPathfindingParentCoords(currNodeCoords.current)
+    //     }
+    // }, [isDrawingPath, options])
 
 
     return (
