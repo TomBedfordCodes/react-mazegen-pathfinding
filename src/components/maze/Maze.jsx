@@ -3,10 +3,10 @@ import { MainContext } from '../Main'
 import Node from './Node'
 import Bfs from '../pathfindingAlgos/Bfs'
 import Prims from '../mazegenAlgos/Prims'
-import { 
+import {
     bfs, wallNode, pathNode,
     startNode, endNode, prims,
- } from '../../namedConstants'
+} from '../../namedConstants'
 
 
 const MazeContext = React.createContext()
@@ -47,7 +47,7 @@ export default function Maze() {
             } else if (choiceType === endNode && specialNodes.current.endNode) {
                 changeNodeClickChoice(specialNodes.current.endNode, pathNode)
                 specialNodes.current.endNode = null
-            } 
+            }
             if (choiceType === startNode && !specialNodes.current.startNode) {
                 specialNodes.current.startNode = coords
                 // HANDLES CASE WHERE START REPLACES END AND VICE VERSA
@@ -92,7 +92,7 @@ export default function Maze() {
     // HELPER FUNCTIONS FOR THE MAZE ALGOS 
 
 
-    function getMazegenStartingPoint() {
+    function getMazegenAlgoStartingPoint() {
         // WILL RETURN A NODE ON AN ODD ROW AND COLUMN
         let row = _.random(0, rowsInCol - 1)
         let col = _.random(0, nodesInRow - 1)
@@ -104,6 +104,47 @@ export default function Maze() {
             }
         }
         return [row, col]
+    }
+
+    function addMazegenStartAndEndNodes() {
+        specialNodes.current.startNode = getRandomMazeStartNode()
+        makeNodePath(specialNodes.current.startNode)
+        specialNodes.current.endNode = getRandomMazeEndNode()
+        makeNodePath(specialNodes.current.endNode)
+    }
+
+    function getRandomMazeStartNode() {
+        let start = [0, _.random(1, Math.floor(nodesInRow / 3))]
+        if (start[1] % 2 === 0) { start = [start[0], start[1] + 1] }
+        while (isNodeWall([1, start[1]])) {
+            start = [0, _.random(1, Math.floor(nodesInRow / 3))]
+            if (start[1] % 2 === 0) { start = [start[0], start[1] + 1] }
+        }
+        return start
+        // s = 0, randint(1, MAZE_SIZE // 3)
+        // if s[1] % 2 == 0: s = s[0], s[1] + 1
+        // while maze[1][s[1]] == WALL_CHAR:
+        //      if maze[1][s[1]] == WALL_CHAR:
+        //          s = 0, randint(1, MAZE_SIZE // 3)
+        //          if s[1] % 2 == 0: s = s[0], s[1] + 1
+        // maze[s[0]][s[1]] = CELL_CHAR
+    }
+
+    function getRandomMazeEndNode() {
+        let end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
+        if (end[1] % 2 === 0) { end = [end[0], end[1] - 1] }
+        while (isNodeWall([end[0] - 1, end[1]])) {
+            end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
+            if (end[1] % 2 === 0) { end = [end[0], end[1] - 1] }
+        }
+        return end
+        // e = MAZE_SIZE - 1, randint(MAZE_SIZE // 3 * 2, MAZE_SIZE - 2)
+        // if e[1] % 2 == 0: e = e[0], e[1] - 1
+        // while maze[e[0] - 1][e[1]] == WALL_CHAR:
+
+        //      e = MAZE_SIZE - 1, randint(MAZE_SIZE // 3 * 2, MAZE_SIZE - 2)
+        //      if e[1] % 2 == 0: e = e[0], e[1] - 1
+        // maze[e[0]][e[1]] = CELL_CHAR
     }
 
 
@@ -153,7 +194,7 @@ export default function Maze() {
 
 
 
-    function getAdjCells(coords, ordered=false) {
+    function getAdjCells(coords, ordered = false) {
         const row = coords[0]
         const col = coords[1]
         const cells = [[row + 2, col], [row, col + 2], [row - 2, col], [row, col - 2]]
@@ -222,10 +263,10 @@ export default function Maze() {
     function isWithinBounds(coords) {
         if (_.isEqual(coords, specialNodes.current.startNode) ||
             _.isEqual(coords, specialNodes.current.endNode)) {
-        // if ((coords[0] === specialNodes.current.startNode[0] &&
-        //     coords[1] === specialNodes.current.startNode[1]) ||
-        //     (coords[0] === specialNodes.current.endNode[0] &&
-        //         coords[1] === specialNodes.current.endNode[1])) {
+            // if ((coords[0] === specialNodes.current.startNode[0] &&
+            //     coords[1] === specialNodes.current.startNode[1]) ||
+            //     (coords[0] === specialNodes.current.endNode[0] &&
+            //         coords[1] === specialNodes.current.endNode[1])) {
             return true
         }
         return ((0 <= coords[0] && coords[0] < rowsInCol) &&
@@ -321,7 +362,7 @@ export default function Maze() {
     const mazeRows = mazeArr.current.map((row, i) => {
         const newRow = row.map(node => {
             return (
-                <Node node={node} key={`${node.id}`}/>
+                <Node node={node} key={`${node.id}`} />
             )
         })
         return (
@@ -337,7 +378,8 @@ export default function Maze() {
         <MazeContext.Provider value={{
             updateMazeOnClick,
             forceMazeUpdate,
-            getMazegenStartingPoint,
+            getMazegenAlgoStartingPoint,
+            addMazegenStartAndEndNodes,
             updatePathfindingParentNode,
             getPathfindingParentCoords,
             getAdjCellFromPassage,
@@ -357,14 +399,14 @@ export default function Maze() {
             isNodeWall,
         }}>
             {/* <div className='maze--border-container'> */}
-                <div className='maze--container' id="maze-container-rect">
-                    {mazeRows}
+            <div className='maze--container' id="maze-container-rect">
+                {mazeRows}
 
-                    {options.mazegenAlgo === prims && mazegenIsRunning && <Prims />}
+                {options.mazegenAlgo === prims && mazegenIsRunning && <Prims />}
 
-                    {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
+                {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
 
-                </div>
+            </div>
             {/* </div> */}
         </MazeContext.Provider>
     )

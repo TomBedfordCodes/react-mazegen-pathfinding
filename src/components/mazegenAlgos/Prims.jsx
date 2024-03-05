@@ -16,18 +16,14 @@ export default function Prims() {
     } = React.useContext(MainContext)
 
     const {
-        getMazegenStartingPoint,
+        getMazegenAlgoStartingPoint,
+        addMazegenStartAndEndNodes,
         forceMazeUpdate,
-        makeNodeSearched,
-        getAdjPassages,
         getAdjCells,
         createPassage,
-        makeNodeFrontier,
         makeNodeCurrent,
         makeNodePath,
-        updatePathfindingParentNode,
         isPassable,
-        isNodeSearched,
         isNodeWall,
     } = React.useContext(MazeContext)
 
@@ -42,7 +38,7 @@ export default function Prims() {
     const [
         mazegenStartingPoint, 
         setMazegenStartingPoint
-    ] = React.useState(getMazegenStartingPoint)
+    ] = React.useState(getMazegenAlgoStartingPoint)
 
     
 
@@ -66,15 +62,14 @@ export default function Prims() {
                 forceMazeUpdate()
             }
         } else if (stack.current.length <= 0) {
-            // EMPTY STACK MEANS MAZEGEN COMPLETE
-            stopMazegen()
+            // EMPTY STACK MEANS MAZEGEN COMPLETE - SET START AND END NODES, REMOVE CURRENT, AND END
             specialNodes.current.currentNode = null
-
-            // ADD RANDOM START/ENDNODE POSITIONS
-
+            addMazegenStartAndEndNodes()
+            stopMazegen()
             return
         }
 
+        // FUNCTIONS TO CLEAN UP ALGO
         function chooseCellForPassage(coords) {
             const adjCells = getAdjCells(coords).filter(cell => {
                 return isPassable(cell)
@@ -92,7 +87,6 @@ export default function Prims() {
             return [stack.current[stack.current.length - 1], stack.current.length - 1]
         }
 
-
         // REPEATING PART OF ALGORITHM
         const currNodeInfo = chooseNextCurr()
         const currNode = currNodeInfo[0]
@@ -100,38 +94,30 @@ export default function Prims() {
 
         if (isPassable(currNode)) {
             stack.current.pop(currNodeIndex)
-            // QUICKLY SKIP TO THE NEXT WALL NODE
+            // QUICKLY SKIP TO THE NEXT WALL NODE TO AVOID VISUALISING NOTHING HAPPENING
             setTimeout(localUpdate, 0)
+            return
         }
+        // ADD CURR TO TREE; POP IT FROM STACK; ADD ITS UNVISITED NEIGHBOURS TO STACK
+        makeNodePath(currNode)
+        makeNodeCurrent(currNode)
+        stack.current.pop(currNodeIndex)
+        const nextCells = getAdjCells(currNode).filter(cell => {
+            return !isPassable(cell)
+        })
+        stack.current.push(...nextCells)
 
-        else {
-            // ADD CURR TO TREE; POP IT FROM STACK; ADD ITS UNVISITED NEIGHBOURS TO STACK
-            makeNodePath(currNode)
-            makeNodeCurrent(currNode)
-            stack.current.pop(currNodeIndex)
-            const nextCells = getAdjCells(currNode).filter(cell => {
-                return !isPassable(cell)
-            })
-            stack.current.push(...nextCells)
-            // MAKE PASSAGE FROM CURR TO AN ADJ VISITED NODE
-            const adjCell = chooseCellForPassage(currNode)
-            createPassage(currNode, adjCell)
-            if (options.isSlowMo) {forceMazeUpdate()}
-            // TRIGGER A RERENDER TO CONTINUE AFTER A CERTAIN AMOUNT OF TIME
-            const timeBetweenRenders = 10
-            if (options.isSlowMo) {
-                setTimeout(localUpdate, timeBetweenRenders)
-            } else {setTimeout(localUpdate, 0)}
-        }
+        // MAKE PASSAGE FROM CURR TO AN ADJ VISITED NODE
+        const adjCell = chooseCellForPassage(currNode)
+        createPassage(currNode, adjCell)
+        if (options.isSlowMo) {forceMazeUpdate()}
+
+        // TRIGGER A RERENDER TO CONTINUE AFTER A CERTAIN AMOUNT OF TIME
+        const timeBetweenRenders = 10
+        if (options.isSlowMo) {
+            setTimeout(localUpdate, timeBetweenRenders)
+        } else {setTimeout(localUpdate, 0)}
         
-
-
-        // // DRAW AFTER X UPDATE CYCLES HAVE PASSED
-        // let skipFrames = 1
-        // count.current++
-        // if (count.current % skipFrames === 0 && options.isSlowMo) {
-        //     forceMazeUpdate()
-        // }
     }, [depsLocalUpdate, mazegenIsRunning])
 
 
