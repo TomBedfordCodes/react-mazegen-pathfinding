@@ -48,7 +48,6 @@ export default function Dfs() {
             const secondNode = [firstNode[0] + 1, firstNode[1]]
             stack.current.push(secondNode)
             updatePathfindingParentNode(secondNode, firstNode)
-            // if (options.isSlowMo) forceMazeUpdate()
         } 
         else if (stack.current.length <= 0) {
             // EMPTY STACK WITHOUT A PATH MEANS PATHFIND FAILED - EXIT HERE
@@ -58,10 +57,7 @@ export default function Dfs() {
         }
         // REPEATING PART OF ALGORITHM
         const currNode = stack.current[stack.current.length - 1]
-        if (options.isSlowMo) {
-            makeNodeCurrent(currNode)
-            // forceMazeUpdate()
-        }
+        makeNodeCurrent(currNode)
         makeNodeSearched(currNode)
         // GET LIST OF OPEN PASSAGES TO TRAVEL THROUGH - IF ANY ARE THE ENDNODE, WE'RE DONE
         const adjPsgs = []
@@ -91,15 +87,16 @@ export default function Dfs() {
             // CONTINUE TO NEXT CYCLE OF ALGO
         } else {
             // GET ADJCELL (AND ADD TO STACK), MAKE ADJ_PSG SEARCHED, ADD PARENT NODES
-            const adjCell = getAdjCellFromPassage(currNode, adjPsgs[0])
-            makeNodeSearched(adjPsgs[0])
+            // const adjCell = getAdjCellFromPassage(currNode, adjPsgs[0])
+            // makeNodeSearched(adjPsgs[0])
             updatePathfindingParentNode(adjPsgs[0], currNode)
-            updatePathfindingParentNode(adjCell, adjPsgs[0])
-            stack.current.push(adjCell)
+            // updatePathfindingParentNode(adjCell, adjPsgs[0])
+            // stack.current.push(adjCell)
+            stack.current.push(adjPsgs[0])
         }
         // IF WE HAVEN'T FINISHED THE ALGO YET, TRIGGER A RE-RENDER TO CONTINUE (AND REDRAW IF SLOWMO)
         if (options.isSlowMo) {
-            setTimeout(localUpdate, 80)
+            setTimeout(localUpdate, 35)
             forceMazeUpdate()
         } else {setTimeout(localUpdate, 0)}
         
