@@ -6,16 +6,16 @@ import {
     wallNode, pathNode, forestNode, mountainNode,
     startNode, endNode, currentNode,
     prims, kruskals,
-    bfs, dijkstras, 
+    bfs, dijkstras,
 } from '../namedConstants.js'
 
 
 
 // NEXT - IMPLEMENT MORE ALGOS.
-//      SELECT ELEMENTS SHOULD AUTOMATICALLY GENERATE THE OPTIONS BASED ON NAMEDCONSTANTS
 //      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING (TERRAIN ETC.)
 //      REDESIGN OPTIONS MENU UI (import components; put options in scrollable container)
 //          It needs to be a lot more informative. How to do hover text?
+//      HAVE 'GENERATE MAZE' AND 'FIND PATH' BUTTONS ABOVE MAZE. AND CLEAR / RESET BTNS BELOW.
 //      HAVE REF BOOL FOR WHEN PATHFINDING IS DONE (AND NOT RESET); IF TERRAIN/START/END CHANGE,
 //          RE-RUN PATHFINDING (WITHOUT SLOW-MO ON). RESET BOOL IF MAZE RESET OR PATHFINDING RESET.
 //          Just implement the basics of this at first with test console.logs()
@@ -93,7 +93,7 @@ function getTemplateNode() {
         nodeWidth,
         nodeHeight,
         coords: [],  // TWO VALUES IN ARRAY FOR POSITION IN 2D MAZE ARRAY
-        id: ``,    
+        id: ``,
         // CHOSEN NODE TYPE
         clickChoiceType: pathNode,
         // MAZEGEN
@@ -106,7 +106,7 @@ function getTemplateNode() {
 // ON STARTUP CREATE MAZE - 2D ARRAY OF NODE OBJECTS
 const initialArr = getResetMaze()
 
-function getResetMaze(forMazegen=false) {
+function getResetMaze(forMazegen = false) {
     const starterArr = []
     for (let i = 0; i < rowsInCol; i++) {
         const row = []
@@ -125,10 +125,10 @@ function getResetMaze(forMazegen=false) {
 
 // TEMPLATE FOR SPECIAL NODES
 const templateSpecialNodes = {
-        [startNode]: null,  // UPDATES WITH THE COORDS 
-        [endNode]: null,
-        [currentNode]: null
-    }
+    [startNode]: null,  // UPDATES WITH THE COORDS 
+    [endNode]: null,
+    [currentNode]: null
+}
 
 
 
@@ -161,7 +161,7 @@ export default function Main() {
         // FILL OUT OPTIONS
         mazegenAlgo: prims,
         pathfindingAlgo: bfs,
-        
+
         isSlowMo: true,
     })
 
@@ -177,6 +177,7 @@ export default function Main() {
     const [resizeToggle, setResizeToggle] = React.useState(false)
 
     React.useEffect(() => {
+        // DOES NOTHING IF MAZEGEN/PATHFINDING ARE RUNNING
         if (pathfindingIsRunning || mazegenIsRunning) {
             return
         }
@@ -185,11 +186,11 @@ export default function Main() {
         mazeContainer.style.height = "100%"
         const width = mazeContainer.getBoundingClientRect().width
         const height = mazeContainer.getBoundingClientRect().height
-        nodesInRow = Math.floor(width/nodeWidth) // width
+        nodesInRow = Math.floor(width / nodeWidth) // width
         if (nodesInRow % 2 === 0) {
             nodesInRow--
         }
-        rowsInCol = Math.floor(height/nodeHeight) // height
+        rowsInCol = Math.floor(height / nodeHeight) // height
         if (rowsInCol % 2 === 0) {
             rowsInCol--
         }
@@ -217,7 +218,7 @@ export default function Main() {
 
 
     // FUNCTIONS TO CONTROL ALGOS AND MAZE
-    function resetMaze(forMazegen=false) {
+    function resetMaze(forMazegen = false) {
         stopMazegen()
         stopPathfinding()
         mazeArr.current = getResetMaze(forMazegen)
@@ -245,7 +246,7 @@ export default function Main() {
         setMazegenIsRunning(false)
     }
 
-    function resetPathfinding(rerender=true) {
+    function resetPathfinding(rerender = true) {
         stopPathfinding()
         for (let row of mazeArr.current) {
             for (let node of row) {
@@ -253,7 +254,7 @@ export default function Main() {
             }
         }
         specialNodes.current.currentNode = null
-        if (rerender) {forceUpdate()}
+        if (rerender) { forceUpdate() }
     }
 
 

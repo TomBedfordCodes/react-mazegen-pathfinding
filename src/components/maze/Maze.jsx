@@ -95,13 +95,13 @@ export default function Maze() {
 
     function getMazegenAlgoStartingPoint() {
         // WILL RETURN A NODE ON AN ODD ROW AND COLUMN
-        let row = _.random(0, rowsInCol - 1)
-        let col = _.random(0, nodesInRow - 1)
+        let row = _.random(1, rowsInCol - 2)
+        let col = _.random(1, nodesInRow - 2)
         while (row % 2 === 0 || col % 2 === 0) {
             if (row % 2 === 0) {
-                row = _.random(0, rowsInCol - 1)
+                row = _.random(1, rowsInCol - 2)
             } else if (col % 2 === 0) {
-                col = _.random(0, nodesInRow - 1)
+                col = _.random(1, nodesInRow - 2)
             }
         }
         return [row, col]
@@ -116,11 +116,11 @@ export default function Maze() {
 
     function getRandomMazeStartNode() {
         // let start = [0, _.random(1, Math.floor(nodesInRow / 3))]
-        let start = [0, _.random(0, nodesInRow - 1)]
+        let start = [0, _.random(0, nodesInRow - 2)]
         if (start[1] % 2 === 0) { start = [start[0], start[1] + 1] }
         while (isNodeWall([1, start[1]])) {
             // start = [0, _.random(1, Math.floor(nodesInRow / 3))]
-            start = [0, _.random(0, nodesInRow - 1)]
+            start = [0, _.random(0, nodesInRow - 2)]
             if (start[1] % 2 === 0) { start = [start[0], start[1] + 1] }
         }
         return start
@@ -135,11 +135,11 @@ export default function Maze() {
 
     function getRandomMazeEndNode() {
         // let end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
-        let end = [rowsInCol - 1, _.random(0, nodesInRow - 1)]
+        let end = [rowsInCol - 1, _.random(0, nodesInRow - 2)]
         if (end[1] % 2 === 0) { end = [end[0], end[1] - 1] }
         while (isNodeWall([end[0] - 1, end[1]])) {
             // end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
-            end = [rowsInCol - 1, _.random(0, nodesInRow - 1)]
+            end = [rowsInCol - 1, _.random(0, nodesInRow - 2)]
             if (end[1] % 2 === 0) { end = [end[0], end[1] - 1] }
         }
         return end

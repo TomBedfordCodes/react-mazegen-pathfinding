@@ -42,7 +42,7 @@ export default function Prims() {
             return
         }
         // LIKELIHOOD OF GOING BACK TO A RANDOM NODE TO CREATE A NEW BRANCH (HIGHER = LESS LIKELY)
-        const branchOdds = (nodesInRow + rowsInCol) / 2
+        const branchOdds = (nodesInRow + rowsInCol) * 10000
 
         // ALGORITHM (USING COORDS TO REPRESENT NODES)
         
@@ -69,8 +69,8 @@ export default function Prims() {
             const adjCells = getAdjCells(coords).filter(cell => {
                 return isPassable(cell)
             })
-            const index = _.random(0, adjCells.length - 1)
-            return adjCells[index]
+            // const index = _.random(0, adjCells.length - 1)
+            return adjCells[0]
         }
 
         function chooseNextCurr() {
@@ -108,7 +108,7 @@ export default function Prims() {
         if (options.isSlowMo) {forceMazeUpdate()}
 
         // TRIGGER A RERENDER TO CONTINUE AFTER A CERTAIN AMOUNT OF TIME
-        const timeBetweenRenders = 25
+        const timeBetweenRenders = 20
         if (options.isSlowMo) {
             setTimeout(localUpdate, timeBetweenRenders)
         } else {setTimeout(localUpdate, 0)}
