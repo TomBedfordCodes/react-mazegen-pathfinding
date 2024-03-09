@@ -73,8 +73,8 @@ import {
 const MainContext = React.createContext()
 
 // INITIAL NODE/MAZE SIZE
-const nodeWidth = 11  // Can range from 10 to 30
-const nodeHeight = 11
+const nodeWidth = 10  // Can range from 10 to 30
+const nodeHeight = 10
 let nodesInRow = 53
 let rowsInCol = 39
 

@@ -35,7 +35,7 @@ export default function Node({ node }) {
         case pathNode: 
             className = `${baseName} ${!mazegenIsRunning && fade}`  // ${!pathfindingIsRunning && fade}`
             break
-        case forestNode: // unfortunately using animateAlt animates node on every reset
+        case forestNode:
             className = `${animateAlt} ${forestNode}`  // ${baseName} ${animateAlt} 
             break
         case mountainNode: 
@@ -48,12 +48,13 @@ export default function Node({ node }) {
     if (node.pathfinding.isDrawnPath) {
         className = `${options.isSlowMo && pathfindingIsRunning && pathAnimated} ${drawnPathNode}`  // ${baseName} 
     } else if (specialNodes.current.currentNode && isNodeCurrent(coords)) {
-        className = `${
-            options.isSlowMo && 
-            pathfindingIsRunning && 
-            !mazegenIsRunning &&
-            currentAnimated
-        } ${currentNode}`  // ${baseName}  
+        className = 
+            // `${
+            // options.isSlowMo && 
+            // pathfindingIsRunning && 
+            // !mazegenIsRunning &&
+            // currentAnimated}
+            `${currentNode}`  // ${baseName}  
     } else if (node.pathfinding.isSearched) {
         className = `${searchedNode}`  // ${baseName} 
         if (node.clickChoiceType === forestNode) {
@@ -83,8 +84,10 @@ export default function Node({ node }) {
 
     if (node.clickChoiceType === wallNode) {
         className = `${
-            mazegenIsRunning && options.isSlowMo && 
-            animated} ${wallNode}`  // ${baseName} 
+            (mazegenIsRunning && options.isSlowMo) || 
+            (!mazegenIsRunning) &&
+            animated} 
+            ${wallNode}`  // ${baseName} 
     }
 
     

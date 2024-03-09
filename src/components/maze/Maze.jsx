@@ -1,13 +1,16 @@
 import React from 'react'
 import { MainContext } from '../Main'
 import Node from './Node'
-import Bfs from '../pathfindingAlgos/Bfs'
-import Prims from '../mazegenAlgos/Prims'
 import {
-    bfs, wallNode, pathNode,
-    startNode, endNode, prims, backtracking,
+    bfs, dfs, 
+    prims, backtracking,
+    wallNode, pathNode,
+    startNode, endNode, 
 } from '../../namedConstants'
+import Prims from '../mazegenAlgos/Prims'
 import Backtracking from '../mazegenAlgos/Backtracking'
+import Bfs from '../pathfindingAlgos/Bfs'
+import Dfs from '../pathfindingAlgos/Dfs'
 
 
 const MazeContext = React.createContext()
@@ -135,7 +138,7 @@ export default function Maze() {
 
     function getRandomMazeEndNode() {
         // let end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
-        let end = [rowsInCol - 1, _.random(0, nodesInRow - 2)]
+        let end = [rowsInCol - 1, _.random(1, nodesInRow - 2)]
         if (end[1] % 2 === 0) { end = [end[0], end[1] - 1] }
         while (isNodeWall([end[0] - 1, end[1]])) {
             // end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
@@ -171,7 +174,9 @@ export default function Maze() {
 
     function getPathfindingParentCoords(coords) {
         const parentNode = getNodeFromCoords(coords).pathfinding.parentNode
-        return parentNode.coords
+        if (parentNode) {
+            return parentNode.coords
+        } else return null
     }
 
 
@@ -200,6 +205,7 @@ export default function Maze() {
 
 
     function getAdjCells(coords, ordered = false) {
+        // ORDERED FALSE BY DEFAULT FOR MAZE GENERATION
         const row = coords[0]
         const col = coords[1]
         const cells = [[row + 2, col], [row, col + 2], [row - 2, col], [row, col - 2]]
@@ -211,77 +217,50 @@ export default function Maze() {
         }
         return _.shuffle(filteredCells)
     }
-    // ORDERED STUFF FOR LEFT-TURN BACKTRACKING MISSING
-    // def get_adj_cells(node: (int, int), ordered: bool = False) -> list:
-    //     # returns adjacent cells (visited and unvisited) in random order (unless ordered=True, then in order SENW)
-    //     row, col = node[0], node[1]
-    //     cells = [(row + 2, col), (row, col + 2), (row - 2, col), (row, col - 2)]
-    //     cells = [x for x in cells if is_within_bounds(x)]
-    //     if ordered: return cells
-    //     random.shuffle(cells)
-    //     return cells
 
 
-
-    function getAdjPassages(coords) {
+    function getAdjPassages(coords, turnLeftParent = null) {
         const row = coords[0]
         const col = coords[1]
-        const passages = [[row - 1, col], [row, col + 1], [row + 1, col], [row, col - 1]]
+        let passages = [[row - 1, col], [row, col + 1], [row + 1, col], [row, col - 1]]
+        if (turnLeftParent) {
+            passages = getTurnLeftPassages(coords, turnLeftParent, passages)
+        }
         const filteredPassages = passages.filter(psg => {
             return isWithinBounds(psg) && isPassable(psg)
         })
         return filteredPassages
     }
-    // LEFT-TURN STUFF FOR BACKTRACKING MISSING (DONT THINK I NEED UNORDERED)
-    // def get_adj_passages(node: (int, int), ordered: bool = False, turn_left_parent: (int, int) = None) -> list:
-    //     # returns adjacent passages in random order (unless ordered=True, then in order NESW)
-    //     row, col = node[0], node[1]
-    //     passages = [(row - 1, col), (row, col + 1), (row + 1, col), (row, col - 1)]
-    //     if turn_left_parent is not None:
-    //         passages = _get_turnleft_cells(node, turn_left_parent, passages)
-    //     passages = [x for x in passages if is_within_bounds(x) and is_passable(x)]
-    //     if ordered:
-    //         return passages
-    //     random.shuffle(passages)
-    //     return passages
 
-    // def _get_turnleft_cells(node: (int, int), parent: (int, int), cells: list) -> list:
-    //     # FROM NORTH
-    //     if node[0] > parent[0]:
-    //         return cells[1:]
-    //     # FROM SOUTH
-    //     if node[0] < parent[0]:
-    //         newcells = cells[3:]
-    //         newcells.extend(cells[:2])
-    //         return newcells
-    //     # FROM WEST
-    //     if node[1] > parent[1]:
-    //         return cells[:3]
-    //     # FROM EAST
-    //     if node[1] < parent[1]:
-    //         newcells = cells[2:]
-    //         newcells.extend(cells[:1])
-    //         return newcells
-
+    function getTurnLeftPassages(node, parent, cells) {
+        // FROM NORTH
+        if (node [0] > parent [0]) {
+            return cells.slice(1)
+        } // FROM SOUTH
+        if (node [0] < parent [0]) {
+            const newCells = cells.slice(3)
+            newCells.push(...cells.slice(0, 2))
+            return newCells
+        } // FROM WEST
+        if (node [1] > parent [1]) {
+            return cells.slice(0, 3)
+        } // FROM EAST
+        if (node [1] < parent [1]) {
+            const newCells = cells.slice(2)
+            newCells.push(...cells.slice(0, 1))
+            return newCells
+        }
+    }
 
 
     function isWithinBounds(coords) {
         if (_.isEqual(coords, specialNodes.current.startNode) ||
             _.isEqual(coords, specialNodes.current.endNode)) {
-            // if ((coords[0] === specialNodes.current.startNode[0] &&
-            //     coords[1] === specialNodes.current.startNode[1]) ||
-            //     (coords[0] === specialNodes.current.endNode[0] &&
-            //         coords[1] === specialNodes.current.endNode[1])) {
             return true
         }
         return ((0 <= coords[0] && coords[0] < rowsInCol) &&
             (0 <= coords[1] && coords[1] < nodesInRow))
     }
-    // def is_within_bounds(node: (int, int)) -> bool:
-    //     if node == maze_entry or node == maze_exit:
-    //         return True
-    //     return (0 <= node[0] < MAZE_SIZE - 1) and (0 <= node[1] < MAZE_SIZE - 1)
-
 
 
     function isPassable(coords) {
@@ -415,6 +394,7 @@ export default function Maze() {
                 {options.mazegenAlgo === backtracking && mazegenIsRunning && <Backtracking />}
 
                 {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
+                {options.pathfindingAlgo === dfs && pathfindingIsRunning && <Dfs />}
 
             </div>
             {/* </div> */}

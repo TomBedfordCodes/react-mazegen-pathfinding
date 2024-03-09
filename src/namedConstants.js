@@ -38,6 +38,7 @@ const kruskals = "kruskals"
 
 // PATHFINDING ALGOS
 const bfs = "bfs"
+const dfs = "dfs"
 const dijkstras = "dijkstras"
 
 
@@ -50,6 +51,7 @@ const mazegenAlgoNames = {
 
 const pathfindingAlgoNames = {
     [bfs]: "BFS",
+    [dfs]: "DFS",
     [dijkstras]: "Dijkstra's"
 }
 
@@ -61,6 +63,6 @@ export {
     drawnPathNode, searchedNode, frontierNode,
     choiceNames,
     prims, backtracking, kruskals,
-    bfs, dijkstras,
+    bfs, dfs, dijkstras,
     mazegenAlgoNames, pathfindingAlgoNames
 }
