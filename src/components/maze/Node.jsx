@@ -83,11 +83,12 @@ export default function Node({ node }) {
     }
 
     if (node.clickChoiceType === wallNode) {
-        className = `${
-            (mazegenIsRunning && options.isSlowMo) || 
-            (!mazegenIsRunning) &&
-            animated} 
-            ${wallNode}`  // ${baseName} 
+        className = 
+        // `${
+        //     (mazegenIsRunning && options.isSlowMo) || 
+        //     (!mazegenIsRunning) &&
+        //     animated} 
+            `${wallNode}`  // ${baseName} 
     }
 
     

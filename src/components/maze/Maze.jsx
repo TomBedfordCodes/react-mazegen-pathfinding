@@ -5,12 +5,13 @@ import {
     bfs, dfs, 
     prims, backtracking,
     wallNode, pathNode,
-    startNode, endNode, 
+    startNode, endNode, dijkstras, 
 } from '../../namedConstants'
 import Prims from '../mazegenAlgos/Prims'
 import Backtracking from '../mazegenAlgos/Backtracking'
 import Bfs from '../pathfindingAlgos/Bfs'
 import Dfs from '../pathfindingAlgos/Dfs'
+import Dijkstras from '../pathfindingAlgos/Dijkstras'
 
 
 const MazeContext = React.createContext()
@@ -222,7 +223,9 @@ export default function Maze() {
     function getAdjPassages(coords, turnLeftParent = null) {
         const row = coords[0]
         const col = coords[1]
+        // ORDER: NESW
         let passages = [[row - 1, col], [row, col + 1], [row + 1, col], [row, col - 1]]
+        // let passages = [[row - 1, col], [row + 1, col], [row, col - 1], [row, col + 1]]
         if (turnLeftParent) {
             passages = getTurnLeftPassages(coords, turnLeftParent, passages)
         }
@@ -251,6 +254,29 @@ export default function Maze() {
             return newCells
         }
     }
+
+    function getPassage(currNodeCoords, adjCellCoords) {
+        if (adjCellCoords[0] > currNodeCoords[0]) {
+            return [currNodeCoords[0] + 1, currNodeCoords[1]]
+        } else if (adjCellCoords[0] < currNodeCoords[0]) {
+            return [currNodeCoords[0] - 1, currNodeCoords[1]]
+        } else if (adjCellCoords[1] > currNodeCoords[1]) {
+            return [currNodeCoords[0], currNodeCoords[1] + 1]
+        } else if (adjCellCoords[1] < currNodeCoords[1]) {
+            return [currNodeCoords[0], currNodeCoords[1] - 1]
+        }
+    }
+
+    function getEdgeWeight(currNodeCoords, adjCellCoords) {
+
+    }
+    
+    // THIS DOESN'T TAKE INTO ACCOUNT THE PASSAGE
+    // def get_edge_weight(curr: (int, int), adj: (int, int)) -> int:
+    //     char1 = mz.get_char_from_node(curr)
+    //     char2 = mz.get_char_from_node(adj)
+    //     return max(WEIGHTS[char1], WEIGHTS[char2])
+
 
 
     function isWithinBounds(coords) {
@@ -373,6 +399,7 @@ export default function Maze() {
             getAdjCellFromPassage,
             getAdjCells,
             getAdjPassages,
+            getPassage,
             createPassage,
             makeNodePath,
             makeNodeSearched,
@@ -385,6 +412,7 @@ export default function Maze() {
             isPassable,
             isNodeCurrent,
             isNodeWall,
+            getNodeFromCoords,
         }}>
             {/* <div className='maze--border-container'> */}
             <div className='maze--container' id="maze-container-rect">
@@ -395,6 +423,7 @@ export default function Maze() {
 
                 {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
                 {options.pathfindingAlgo === dfs && pathfindingIsRunning && <Dfs />}
+                {options.pathfindingAlgo === dijkstras && pathfindingIsRunning && <Dijkstras />}
 
             </div>
             {/* </div> */}

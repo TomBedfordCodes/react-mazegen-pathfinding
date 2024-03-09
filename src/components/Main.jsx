@@ -11,7 +11,9 @@ import {
 
 
 
-// NEXT - IMPLEMENT MORE ALGOS.
+// NEXT - IMPLEMENT ASTAR ALGO, THEN FINAL TWO MAZEGEN ALGOS.
+//      ADD FLAG FOR WHEN MAZEGEN HAS JUST FINISHED, SO WALLS ONLY ANIMATE WHEN CLICKED. 
+//          TOGGLE FLAG OFF AFTER A QUARTER-SECOND OR SO. (Walls animation currently turned off.)
 //      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING (TERRAIN ETC.)
 //      REDESIGN OPTIONS MENU UI (import components; put options in scrollable container)
 //          It needs to be a lot more informative. How to do hover text?
@@ -85,6 +87,10 @@ function getTemplatePathfinding() {
         isSearched: false,
         isFrontier: false,
         isDrawnPath: false,
+        g: Infinity,
+        f: Infinity,
+        h: Infinity,
+        orderAdded: 0,
     }
 }
 
@@ -97,7 +103,7 @@ function getTemplateNode() {
         // CHOSEN NODE TYPE
         clickChoiceType: pathNode,
         // MAZEGEN
-        [prims]: {},
+        [kruskals]: {},
         // PATHFINDING
         pathfinding: getTemplatePathfinding()
     }

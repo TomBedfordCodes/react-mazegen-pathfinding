@@ -1,7 +1,6 @@
 import React from 'react'
 import { MainContext } from '../Main'
 import { choiceNames } from '../../namedConstants'
-import { startNode, endNode } from '../../namedConstants'
 import { OptionsContext } from './Options'
 
 

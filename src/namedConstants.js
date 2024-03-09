@@ -2,9 +2,9 @@
 const wallNode = "wallNode"
 const pathNode = "pathNode"
 const forestNode = "forestNode"
+const mountainNode = "mountainNode"
 const searchedForestNode = "searchedForestNode"
 const frontierForestNode = "frontierForestNode"
-const mountainNode = "mountainNode"
 const searchedMountainNode = "searchedMountainNode"
 const frontierMountainNode = "frontierMountainNode"
 
@@ -27,6 +27,13 @@ const choiceNames = {
     // TODO - REMOVE START/ENDNODES FROM THIS DICT?
     [startNode]: "Start Node",
     [endNode]: "End Node",
+}
+
+// TERRAIN WEIGHTS
+const terrainWeights = {
+    [pathNode]: 1,
+    [forestNode]: 5,
+    [mountainNode]: 15,
 }
 
 
@@ -62,6 +69,7 @@ export {
     startNode, endNode, currentNode, 
     drawnPathNode, searchedNode, frontierNode,
     choiceNames,
+    terrainWeights,
     prims, backtracking, kruskals,
     bfs, dfs, dijkstras,
     mazegenAlgoNames, pathfindingAlgoNames

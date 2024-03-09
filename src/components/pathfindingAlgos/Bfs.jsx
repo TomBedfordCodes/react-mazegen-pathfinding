@@ -39,22 +39,22 @@ export default function Bfs() {
             !specialNodes.current.startNode || !specialNodes.current.endNode) { 
             return
         }
-        // ALGORITHM (USING COORDS TO REPRESENT NODES)
+        // EDGE CASES (START AND END) - NODES ARE REPRESENTED BY COORDS
         if (queue.current.length <= 0 && !isNodeSearched(specialNodes.current.startNode)) {
             // IF QUEUE IS EMPTY AND STARTNODE IS UNSEARCHED, BEGIN ALGO
             const firstNodeCoords = specialNodes.current.startNode
             makeNodeSearched(firstNodeCoords)
             queue.current.push(firstNodeCoords)
-            // USE FORCEMAZEUPDATE TO RE-RENDER THE MAZE MID-ALGO IF SLOW-MO IS TOGGLED ON
             if (options.isSlowMo) forceMazeUpdate()
         } 
         else if (queue.current.length <= 0) {
-            // EMPTY QUEUE WITHOUT A PATH MEANS PATHFIND FAILED - WE EXIT HERE
-            // forceMazeUpdate()
+            // EMPTY QUEUE WITHOUT A PATH MEANS PATHFIND FAILED - EXIT HERE
             stopPathfinding()
             specialNodes.current.currentNode = null
             return
         }
+
+        // REPEATING PART OF ALGORITHM
         const curr = queue.current.shift()
         makeNodeSearched(curr)
         makeNodeCurrent(curr)
