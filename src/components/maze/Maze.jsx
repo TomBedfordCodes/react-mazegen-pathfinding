@@ -2,16 +2,17 @@ import React from 'react'
 import { MainContext } from '../Main'
 import Node from './Node'
 import {
-    bfs, dfs, 
     prims, backtracking,
+    bfs, dfs, dijkstras, astar,
     wallNode, pathNode,
-    startNode, endNode, dijkstras, 
+    startNode, endNode, 
 } from '../../namedConstants'
 import Prims from '../mazegenAlgos/Prims'
 import Backtracking from '../mazegenAlgos/Backtracking'
 import Bfs from '../pathfindingAlgos/Bfs'
 import Dfs from '../pathfindingAlgos/Dfs'
 import Dijkstras from '../pathfindingAlgos/Dijkstras'
+import AStar from '../pathfindingAlgos/AStar'
 
 
 const MazeContext = React.createContext()
@@ -424,6 +425,7 @@ export default function Maze() {
                 {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
                 {options.pathfindingAlgo === dfs && pathfindingIsRunning && <Dfs />}
                 {options.pathfindingAlgo === dijkstras && pathfindingIsRunning && <Dijkstras />}
+                {options.pathfindingAlgo === astar && pathfindingIsRunning && <AStar />}
 
             </div>
             {/* </div> */}

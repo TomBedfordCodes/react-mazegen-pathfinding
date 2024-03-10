@@ -70,41 +70,45 @@ export default function Dijkstras() {
             return
         }
         // REPEATING PART OF ALGORITHM
-        const currNode = priorityQueue.current.dequeue()  // RETURNS A NODE, NOT JUST COORDS
-        makeNodeCurrent(currNode.coords)
+        const currNode = priorityQueue.current.dequeue()
+        if (_.isEqual(currNode.coords, specialNodes.current.endNode)) {
+            // IF CURRNODE IS THE ENDNODE, END AND DRAW PATH
+            specialNodes.current.currentNode = null
+            setIsDrawingPath(true)
+            return
+        }
         if (currNode.pathfinding.isSearched) {
             // CONTINUE TO NEXT PASS
             setTimeout(localUpdate, 0)
             return
         }
-        else {
-            // MAKE CURR SEARCHED
-            currNode.pathfinding.isSearched = true
-            // LOOP THROUGH NEIGHBOURING PASSAGES
-            for (let adjPsg of getAdjPassages(currNode.coords)) {
-                orderCount.current++
-                if (_.isEqual(adjPsg, specialNodes.current.endNode)) {
-                    // IF WE FIND ENDNODE, ADD CURRNODE AS ITS PARENT, THEN DRAW PATH
-                    updatePathfindingParentNode(adjPsg, currNode.coords)
-                    setIsDrawingPath(true)
-                    return
-                }
-                if (isNodeSearched(adjPsg)) {
-                    continue
-                }
-                makeNodeFrontier(adjPsg)
-                // COMPARE CURRENT DISTANCE FROM ADJPSG TO ENTRANCE VS DISTANCE VIA CURRNODE
-                const adjPsgNode = getNodeFromCoords(adjPsg)
-                const adjPsgG = adjPsgNode.pathfinding.g
-                const edgeWeight = terrainWeights[adjPsgNode.clickChoiceType]
-                const newG = currNode.pathfinding.g + edgeWeight
-                if (newG < adjPsgG) {
-                    // UPDATE ADJPSGG TO NEWG, ASSIGN NEW PARENT, AND ENQUEUE ADJPSG
-                    adjPsgNode.pathfinding.g = newG
-                    adjPsgNode.pathfinding.orderAdded = orderCount.current
-                    priorityQueue.current.enqueue(adjPsgNode)
-                    updatePathfindingParentNode(adjPsg, currNode.coords)
-                }
+        // MAKE CURR SEARCHED
+        currNode.pathfinding.isSearched = true
+        makeNodeCurrent(currNode.coords)
+        // LOOP THROUGH NEIGHBOURING PASSAGES
+        for (let adjPsg of getAdjPassages(currNode.coords)) {
+            orderCount.current++
+            // if (_.isEqual(adjPsg, specialNodes.current.endNode)) {
+            //     // IF WE FIND ENDNODE, ADD CURRNODE AS ITS PARENT, THEN DRAW PATH
+            //     updatePathfindingParentNode(adjPsg, currNode.coords)
+            //     setIsDrawingPath(true)
+            //     return
+            // }
+            if (isNodeSearched(adjPsg)) {
+                continue
+            }
+            makeNodeFrontier(adjPsg)
+            // COMPARE CURRENT DISTANCE FROM ADJPSG TO ENTRANCE VS DISTANCE VIA CURRNODE
+            const adjPsgNode = getNodeFromCoords(adjPsg)
+            const adjPsgG = adjPsgNode.pathfinding.g
+            const edgeWeight = terrainWeights[adjPsgNode.clickChoiceType]
+            const newG = currNode.pathfinding.g + edgeWeight
+            if (newG < adjPsgG) {
+                // UPDATE ADJPSGG TO NEWG, ASSIGN NEW PARENT, AND ENQUEUE ADJPSG
+                adjPsgNode.pathfinding.g = newG
+                adjPsgNode.pathfinding.orderAdded = orderCount.current
+                priorityQueue.current.enqueue(adjPsgNode)
+                updatePathfindingParentNode(adjPsg, currNode.coords)
             }
         }
         // IF WE HAVEN'T FINISHED THE ALGO YET, TRIGGER A RE-RENDER TO CONTINUE (AND GET UPDATED STATE)

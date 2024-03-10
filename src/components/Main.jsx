@@ -11,7 +11,7 @@ import {
 
 
 
-// NEXT - IMPLEMENT ASTAR ALGO, THEN FINAL TWO MAZEGEN ALGOS.
+// NEXT - IMPLEMENT FINAL TWO MAZEGEN ALGOS: Kruskal's and Hunt and Kill
 //      ADD FLAG FOR WHEN MAZEGEN HAS JUST FINISHED, SO WALLS ONLY ANIMATE WHEN CLICKED. 
 //          TOGGLE FLAG OFF AFTER A QUARTER-SECOND OR SO. (Walls animation currently turned off.)
 //      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING (TERRAIN ETC.)
@@ -21,6 +21,7 @@ import {
 //      HAVE REF BOOL FOR WHEN PATHFINDING IS DONE (AND NOT RESET); IF TERRAIN/START/END CHANGE,
 //          RE-RUN PATHFINDING (WITHOUT SLOW-MO ON). RESET BOOL IF MAZE RESET OR PATHFINDING RESET.
 //          Just implement the basics of this at first with test console.logs()
+//      CHANGE RUN/STOP BTNS TO TOGGLES SO I'M NOT REPLACING THE BTNS (THEY KEEP FOCUS AFTER PRESSING)
 
 // OPTIONS:
 //      TERRAIN FOR CLICKING (track state so only one can be selected:
@@ -89,7 +90,6 @@ function getTemplatePathfinding() {
         isDrawnPath: false,
         g: Infinity,
         f: Infinity,
-        h: Infinity,
         orderAdded: 0,
     }
 }

@@ -31,6 +31,8 @@ const choiceNames = {
 
 // TERRAIN WEIGHTS
 const terrainWeights = {
+    [startNode]: 1,
+    [endNode]: 1,
     [pathNode]: 1,
     [forestNode]: 5,
     [mountainNode]: 15,
@@ -47,6 +49,7 @@ const kruskals = "kruskals"
 const bfs = "bfs"
 const dfs = "dfs"
 const dijkstras = "dijkstras"
+const astar = "astar"
 
 
 // DISPLAY NAMES
@@ -59,7 +62,8 @@ const mazegenAlgoNames = {
 const pathfindingAlgoNames = {
     [bfs]: "BFS",
     [dfs]: "DFS",
-    [dijkstras]: "Dijkstra's"
+    [dijkstras]: "Dijkstra's",
+    [astar]: "A-Star"
 }
 
 
@@ -71,6 +75,6 @@ export {
     choiceNames,
     terrainWeights,
     prims, backtracking, kruskals,
-    bfs, dfs, dijkstras,
+    bfs, dfs, dijkstras, astar,
     mazegenAlgoNames, pathfindingAlgoNames
 }
