@@ -121,13 +121,13 @@ export default function Dijkstras() {
         } else {setTimeout(localUpdate, 0)}
         
         // DRAW AFTER X UPDATE CYCLES HAVE PASSED
-        let skipFrames = 1
+        let skipFrames = 2
         if (priorityQueue.current.size() > 45) {
-            skipFrames = 4
+            skipFrames = 6
         } else if (priorityQueue.current.size() > 30) {
-            skipFrames = 3
+            skipFrames = 4
         } else if (priorityQueue.current.size() > 15) { 
-            skipFrames = 2
+            skipFrames = 3
         } 
         count.current++
         if (count.current % skipFrames === 0 && options.isSlowMo) {
