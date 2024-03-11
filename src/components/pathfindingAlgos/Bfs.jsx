@@ -43,7 +43,6 @@ export default function Bfs() {
         if (queue.current.length <= 0 && !isNodeSearched(specialNodes.current.startNode)) {
             // IF QUEUE IS EMPTY AND STARTNODE IS UNSEARCHED, BEGIN ALGO
             const firstNodeCoords = specialNodes.current.startNode
-            makeNodeSearched(firstNodeCoords)
             queue.current.push(firstNodeCoords)
             if (options.isSlowMo) forceMazeUpdate()
         } 
@@ -53,7 +52,6 @@ export default function Bfs() {
             specialNodes.current.currentNode = null
             return
         }
-
         // REPEATING PART OF ALGORITHM
         const curr = queue.current.shift()
         makeNodeSearched(curr)
@@ -71,7 +69,6 @@ export default function Bfs() {
             // OTHERWISE ADD ADJ CELL TO FRONTIER, AND CHANGE ADJ PASSAGE TO SEARCHED
             makeNodeFrontier(adjPsg)
             queue.current.push(adjPsg)
-            // if (options.isSlowMo) forceMazeUpdate()  // in case we want to update every frame
             // UPDATE PARENT OF ADJ_PSG
             updatePathfindingParentNode(adjPsg, curr)
         }

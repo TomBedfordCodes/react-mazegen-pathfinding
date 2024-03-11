@@ -44,10 +44,7 @@ export default function Dfs() {
         if (stack.current.length <= 0 && !isNodeSearched(specialNodes.current.startNode)) {
             // IF STACK IS EMPTY AND STARTNODE IS UNSEARCHED, BEGIN ALGO
             const firstNode = specialNodes.current.startNode
-            makeNodeSearched(firstNode)
-            const secondNode = [firstNode[0] + 1, firstNode[1]]
-            stack.current.push(secondNode)
-            updatePathfindingParentNode(secondNode, firstNode)
+            stack.current.push(firstNode)
         } 
         else if (stack.current.length <= 0) {
             // EMPTY STACK WITHOUT A PATH MEANS PATHFIND FAILED - EXIT HERE
@@ -87,11 +84,7 @@ export default function Dfs() {
             // CONTINUE TO NEXT CYCLE OF ALGO
         } else {
             // GET ADJCELL (AND ADD TO STACK), MAKE ADJ_PSG SEARCHED, ADD PARENT NODES
-            // const adjCell = getAdjCellFromPassage(currNode, adjPsgs[0])
-            // makeNodeSearched(adjPsgs[0])
             updatePathfindingParentNode(adjPsgs[0], currNode)
-            // updatePathfindingParentNode(adjCell, adjPsgs[0])
-            // stack.current.push(adjCell)
             stack.current.push(adjPsgs[0])
         }
         // IF WE HAVEN'T FINISHED THE ALGO YET, TRIGGER A RE-RENDER TO CONTINUE (AND REDRAW IF SLOWMO)
