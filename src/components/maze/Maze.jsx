@@ -2,13 +2,14 @@ import React from 'react'
 import { MainContext } from '../Main'
 import Node from './Node'
 import {
-    prims, backtracking,
+    prims, backtracking, kruskals,
     bfs, dfs, dijkstras, astar,
     wallNode, pathNode,
-    startNode, endNode, 
+    startNode, endNode,  
 } from '../../namedConstants'
 import Prims from '../mazegenAlgos/Prims'
 import Backtracking from '../mazegenAlgos/Backtracking'
+import Kruskals from '../mazegenAlgos/Kruskals'
 import Bfs from '../pathfindingAlgos/Bfs'
 import Dfs from '../pathfindingAlgos/Dfs'
 import Dijkstras from '../pathfindingAlgos/Dijkstras'
@@ -368,6 +369,10 @@ export default function Maze() {
         return getNodeFromCoords(coords).clickChoiceType === wallNode
     }
 
+    function isPossibleCell(coords) {
+        return coords[0] % 2 === 1 && coords[1] % 2 === 1 
+    }
+
 
 
 
@@ -413,6 +418,7 @@ export default function Maze() {
             isPassable,
             isNodeCurrent,
             isNodeWall,
+            isPossibleCell,
             getNodeFromCoords,
         }}>
             {/* <div className='maze--border-container'> */}
@@ -421,6 +427,7 @@ export default function Maze() {
 
                 {options.mazegenAlgo === prims && mazegenIsRunning && <Prims />}
                 {options.mazegenAlgo === backtracking && mazegenIsRunning && <Backtracking />}
+                {options.mazegenAlgo === kruskals && mazegenIsRunning && <Kruskals />}
 
                 {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
                 {options.pathfindingAlgo === dfs && pathfindingIsRunning && <Dfs />}
