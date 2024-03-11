@@ -17,18 +17,6 @@ const frontierNode = "frontierNode"
 const currentNode = "currentNode"
 
 
-// NODE CHOICE NAMES
-const choiceNames = {
-    [wallNode]: "Wall",
-    [pathNode]: "Path",
-    [forestNode]: "Forest",
-    [mountainNode]: "Mountain",
-
-    // TODO - REMOVE START/ENDNODES FROM THIS DICT?
-    [startNode]: "Start Node",
-    [endNode]: "End Node",
-}
-
 // TERRAIN WEIGHTS
 const terrainWeights = {
     [startNode]: 1,
@@ -36,6 +24,18 @@ const terrainWeights = {
     [pathNode]: 1,
     [forestNode]: 5,
     [mountainNode]: 15,
+}
+
+// NODE DISPLAY NAMES
+const choiceNames = {
+    [wallNode]: "Wall ∞",
+    [pathNode]: `Path x${terrainWeights[pathNode]}`,
+    [forestNode]: `Forest x${terrainWeights[forestNode]}`,
+    [mountainNode]: `Mountain x${terrainWeights[mountainNode]}`,
+
+    // TODO - REMOVE START/ENDNODES FROM THIS DICT?
+    [startNode]: "Start Node",
+    [endNode]: "End Node",
 }
 
 

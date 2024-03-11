@@ -1,6 +1,6 @@
 import React from 'react'
 import { MainContext } from '../Main'
-import { choiceNames } from '../../namedConstants'
+import { choiceNames, terrainWeights, forestNode, mountainNode, pathNode } from '../../namedConstants'
 import { OptionsContext } from './Options'
 
 
