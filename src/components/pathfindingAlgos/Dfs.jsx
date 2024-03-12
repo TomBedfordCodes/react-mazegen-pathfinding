@@ -89,7 +89,7 @@ export default function Dfs() {
         }
         // IF WE HAVEN'T FINISHED THE ALGO YET, TRIGGER A RE-RENDER TO CONTINUE (AND REDRAW IF SLOWMO)
         if (options.isSlowMo) {
-            setTimeout(localUpdate, 35)
+            setTimeout(localUpdate, 30)
             forceMazeUpdate()
         } else {setTimeout(localUpdate, 0)}
         
