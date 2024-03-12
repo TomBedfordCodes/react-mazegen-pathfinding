@@ -337,6 +337,21 @@ main {
 }
 
 
+.huntAndKill-current-row {
+  /* background-color: rgb(128, 0, 128); */
+  /* background-color: rgb(171, 63, 220); */
+  background: linear-gradient(to left, rgb(23, 23, 23) 50%, rgb(191, 73, 245) 50%);
+  border: solid rgba(255, 255, 255, 0.15) 1px;
+
+}
+
+.huntAndKill-current-col {
+  /* background-color: rgb(128, 0, 128); */
+  /* background-color: rgb(171, 63, 220); */
+  background: linear-gradient(to top, rgb(23, 23, 23) 50%, rgb(191, 73, 245) 50%);
+  border: solid rgba(255, 255, 255, 0.15) 1px;
+}
+
 
 
 

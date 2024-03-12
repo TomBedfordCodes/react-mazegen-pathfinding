@@ -4,7 +4,7 @@ import { MazeContext } from './Maze.jsx'
 import {
     wallNode, pathNode, startNode, endNode, drawnPathNode, 
     searchedNode, frontierNode, currentNode, forestNode, mountainNode,
-    searchedForestNode, frontierForestNode, searchedMountainNode, frontierMountainNode,
+    searchedForestNode, frontierForestNode, searchedMountainNode, frontierMountainNode, huntAndKill,
 } from '../../namedConstants.js'
 
 
@@ -72,13 +72,15 @@ export default function Node({ node }) {
     }
 
 
-    if (specialNodes.current.startNode &&
-        coords[0] === specialNodes.current.startNode[0] &&
-        coords[1] === specialNodes.current.startNode[1]) {
+    // if (specialNodes.current.startNode &&
+    //     coords[0] === specialNodes.current.startNode[0] &&
+    //     coords[1] === specialNodes.current.startNode[1]) {
+    if (_.isEqual(coords, specialNodes.current.startNode)) {
             className = `${animated} ${startNode}`  // ${baseName} 
-    } else if (specialNodes.current.endNode &&
-        coords[0] === specialNodes.current.endNode[0] &&
-        coords[1] === specialNodes.current.endNode[1]) {
+    // } else if (specialNodes.current.endNode &&
+    //     coords[0] === specialNodes.current.endNode[0] &&
+    //     coords[1] === specialNodes.current.endNode[1]) {
+    } else if (_.isEqual(coords, specialNodes.current.endNode)) {
             className = `${animated} ${endNode}`  //${baseName} 
     }
 
@@ -90,6 +92,17 @@ export default function Node({ node }) {
         //     animated} 
             `${wallNode}`  // ${baseName} 
     }
+
+
+    if (_.isEqual(coords, [specialNodes.current.hnkCurrentRow, 0])) {
+        className = `${huntAndKill}-current-row`
+    }
+
+    if (_.isEqual(coords, [0, specialNodes.current.hnkCurrentCol])) {
+        className = `${huntAndKill}-current-col`
+    }
+
+
 
     
     function checkBtnDown(e) {

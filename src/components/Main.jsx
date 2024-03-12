@@ -4,17 +4,17 @@ import Options from './options/Options.jsx'
 
 import {
     wallNode, pathNode, forestNode, mountainNode,
-    startNode, endNode, currentNode,
-    prims, kruskals,
-    bfs, dijkstras,
+    startNode, endNode, 
+    currentNode, hnkCurrentRow, hnkCurrentCol,
+    prims,
+    bfs,
 } from '../namedConstants.js'
 
 
 
-// NEXT - IMPLEMENT FINAL TWO MAZEGEN ALGOS: Kruskal's and Hunt and Kill
+// NEXT - DISABLE MOST BTNS WHEN ALGOS ARE RUNNING (TERRAIN ETC.)
 //      ADD FLAG FOR WHEN MAZEGEN HAS JUST FINISHED, SO WALLS ONLY ANIMATE WHEN CLICKED. 
 //          TOGGLE FLAG OFF AFTER A QUARTER-SECOND OR SO. (Walls animation currently turned off.)
-//      DISABLE MOST BTNS WHEN ALGOS ARE RUNNING (TERRAIN ETC.)
 //      REDESIGN OPTIONS MENU UI (import components; put options in scrollable container)
 //          It needs to be a lot more informative. How to do hover text?
 //      HAVE 'GENERATE MAZE' AND 'FIND PATH' BUTTONS ABOVE MAZE. AND CLEAR / RESET BTNS BELOW.
@@ -33,11 +33,6 @@ import {
 //      WHICH PATHFINDING ALGO:
 //          BFS, DFS (TURN LEFT), DIJKSTRA'S, A-STAR
 
-// COLOURS:
-//      PURPLE = (128, 0, 128)        - current
-//      VIOLET = (171, 63, 220)       - hunt and kill starting row/column
-//      FORESTGREEN = (0, 90, 0)
-//      FORESTSEARCHGREEN = (0, 140, 0)
 
 //      MIGHT BE BETTER TO HAVE LITTLE ICONS FOR FOREST/MOUNTAIN TILES, WHICH WOULDN'T AFFECT THE 
 //          SEARCH COLOURS.
@@ -102,8 +97,6 @@ function getTemplateNode() {
         id: ``,
         // CHOSEN NODE TYPE
         clickChoiceType: pathNode,
-        // MAZEGEN
-        [kruskals]: {},
         // PATHFINDING
         pathfinding: getTemplatePathfinding()
     }
@@ -133,7 +126,9 @@ function getResetMaze(forMazegen = false) {
 const templateSpecialNodes = {
     [startNode]: null,  // UPDATES WITH THE COORDS 
     [endNode]: null,
-    [currentNode]: null
+    [currentNode]: null,
+    [hnkCurrentRow]: null,
+    [hnkCurrentCol]: null,
 }
 
 

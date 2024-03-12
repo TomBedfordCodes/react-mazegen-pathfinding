@@ -2,7 +2,7 @@ import React from 'react'
 import { MainContext } from '../Main'
 import Node from './Node'
 import {
-    prims, backtracking, kruskals,
+    prims, backtracking, kruskals, huntAndKill,
     bfs, dfs, dijkstras, astar,
     wallNode, pathNode,
     startNode, endNode,  
@@ -10,6 +10,7 @@ import {
 import Prims from '../mazegenAlgos/Prims'
 import Backtracking from '../mazegenAlgos/Backtracking'
 import Kruskals from '../mazegenAlgos/Kruskals'
+import HuntAndKill from '../mazegenAlgos/HuntAndKill'
 import Bfs from '../pathfindingAlgos/Bfs'
 import Dfs from '../pathfindingAlgos/Dfs'
 import Dijkstras from '../pathfindingAlgos/Dijkstras'
@@ -120,13 +121,14 @@ export default function Maze() {
         makeNodePath(specialNodes.current.endNode)
     }
 
+    const confineFraction = 4
     function getRandomMazeStartNode() {
-        // let start = [0, _.random(1, Math.floor(nodesInRow / 3))]
-        let start = [0, _.random(0, nodesInRow - 2)]
+        let start = [0, _.random(1, Math.floor(nodesInRow / confineFraction))]
+        // let start = [0, _.random(0, nodesInRow - 2)]
         if (start[1] % 2 === 0) { start = [start[0], start[1] + 1] }
         while (isNodeWall([1, start[1]])) {
-            // start = [0, _.random(1, Math.floor(nodesInRow / 3))]
-            start = [0, _.random(0, nodesInRow - 2)]
+            start = [0, _.random(1, Math.floor(nodesInRow / confineFraction))]
+            // start = [0, _.random(0, nodesInRow - 2)]
             if (start[1] % 2 === 0) { start = [start[0], start[1] + 1] }
         }
         return start
@@ -140,12 +142,12 @@ export default function Maze() {
     }
 
     function getRandomMazeEndNode() {
-        // let end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
-        let end = [rowsInCol - 1, _.random(1, nodesInRow - 2)]
+        let end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / confineFraction * (confineFraction - 1)), nodesInRow - 2)]
+        // let end = [rowsInCol - 1, _.random(1, nodesInRow - 2)]
         if (end[1] % 2 === 0) { end = [end[0], end[1] - 1] }
         while (isNodeWall([end[0] - 1, end[1]])) {
-            // end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / 3 * 2), nodesInRow - 2)]
-            end = [rowsInCol - 1, _.random(0, nodesInRow - 2)]
+            end = [rowsInCol - 1, _.random(Math.floor(nodesInRow / confineFraction * (confineFraction - 1)), nodesInRow - 2)]
+            // end = [rowsInCol - 1, _.random(0, nodesInRow - 2)]
             if (end[1] % 2 === 0) { end = [end[0], end[1] - 1] }
         }
         return end
@@ -268,17 +270,6 @@ export default function Maze() {
             return [currNodeCoords[0], currNodeCoords[1] - 1]
         }
     }
-
-    function getEdgeWeight(currNodeCoords, adjCellCoords) {
-
-    }
-    
-    // THIS DOESN'T TAKE INTO ACCOUNT THE PASSAGE
-    // def get_edge_weight(curr: (int, int), adj: (int, int)) -> int:
-    //     char1 = mz.get_char_from_node(curr)
-    //     char2 = mz.get_char_from_node(adj)
-    //     return max(WEIGHTS[char1], WEIGHTS[char2])
-
 
 
     function isWithinBounds(coords) {
@@ -428,6 +419,7 @@ export default function Maze() {
                 {options.mazegenAlgo === prims && mazegenIsRunning && <Prims />}
                 {options.mazegenAlgo === backtracking && mazegenIsRunning && <Backtracking />}
                 {options.mazegenAlgo === kruskals && mazegenIsRunning && <Kruskals />}
+                {options.mazegenAlgo === huntAndKill && mazegenIsRunning && <HuntAndKill />}
 
                 {options.pathfindingAlgo === bfs && pathfindingIsRunning && <Bfs />}
                 {options.pathfindingAlgo === dfs && pathfindingIsRunning && <Dfs />}

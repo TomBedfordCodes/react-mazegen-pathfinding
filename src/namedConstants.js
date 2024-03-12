@@ -14,7 +14,11 @@ const endNode = "endNode"
 const drawnPathNode = "drawnPathNode"
 const searchedNode = "searchedNode"
 const frontierNode = "frontierNode"
+
+// SPECIAL NODES
 const currentNode = "currentNode"
+const hnkCurrentRow = "hnkCurrentRow"
+const hnkCurrentCol = "hnkCurrentCol"
 
 
 // TERRAIN WEIGHTS
@@ -43,6 +47,7 @@ const choiceNames = {
 const prims = "prims"
 const backtracking = "backtracking"
 const kruskals = "kruskals"
+const huntAndKill = "huntAndKill"
 
 
 // PATHFINDING ALGOS
@@ -57,6 +62,7 @@ const mazegenAlgoNames = {
     [prims]: "Prim's",
     [backtracking]: "Backtracking",
     [kruskals]: "Kruskal's",
+    [huntAndKill]: "Hunt and Kill",
 }
 
 const pathfindingAlgoNames = {
@@ -70,11 +76,12 @@ const pathfindingAlgoNames = {
 export { 
     wallNode, pathNode, forestNode, mountainNode, 
     searchedForestNode, frontierForestNode, searchedMountainNode, frontierMountainNode,
-    startNode, endNode, currentNode, 
+    startNode, endNode, 
+    currentNode, hnkCurrentRow, hnkCurrentCol,
     drawnPathNode, searchedNode, frontierNode,
     choiceNames,
     terrainWeights,
-    prims, backtracking, kruskals,
+    prims, backtracking, kruskals, huntAndKill,
     bfs, dfs, dijkstras, astar,
     mazegenAlgoNames, pathfindingAlgoNames
 }
