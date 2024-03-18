@@ -1,4 +1,5 @@
 import React from 'react'
+import mazeImg from '/maze-icon.jpg'
 
 export default function Navbar() {
     return (
@@ -9,7 +10,7 @@ export default function Navbar() {
                 <li><a className="navbar--link" href="#">Projects</a></li>
             </ul>
             <h1 className='navbar--title'>Maze Generator <span className='accent-text'>&</span> Pathfinder</h1>
-            <img className='navbar--icon' src='/maze-icon.jpg' />
+            <img className='navbar--icon' src={mazeImg} />
         </nav>
     )
 }
