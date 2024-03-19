@@ -282,6 +282,7 @@ export default function Main() {
             rowsInCol,
         }}>
             <main>
+                <h1>test</h1>
                 <div className='main--maze-container'>
                     <Maze />
                 </div>
